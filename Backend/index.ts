@@ -1,19 +1,19 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const pool = require("./db");
+import express from "express";
+import dotenv from "dotenv";
+import { pool } from "./db";
 
 dotenv.config();
 
-const port = process.env.EXPRESS_PORT;
+const port = process.env.EXPRESS_PORT || 3000;
 const app = express();
 app.use(express.json());
 
-app.get("/", async (req, res) => {
+app.get("/", async (req: any, res: any) => {
   const data = await pool.query("SELECT * FROM test;");
   res.json(data.rows);
 });
 
-app.post("/", async (req, res) => {
+app.post("/", async (req: any, res: any) => {
   const { comment } = req.body;
   await pool.query("INSERT INTO test (comment) VALUES ($1);", [comment]);
   res.status(200).send("Success");
