@@ -1,21 +1,39 @@
 import express from "express";
 import dotenv from "dotenv";
-import { pool } from "./db";
+import userRoutes from "./routes/users";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./auth";
+import cors from "cors";
 
 dotenv.config();
 
 const port = process.env.EXPRESS_PORT || 3000;
 const app = express();
+
+// Register CORS middleware first
+app.use(cors({ origin: "http://localhost:3001" }));
+
+// Parse JSON bodies for all incoming requests
 app.use(express.json());
 
-app.get("/", async (req: any, res: any) => {
-  const data = await pool.query("SELECT * FROM test;");
-  res.json(data.rows);
+// Register auth middleware for /api/auth/* routes
+app.all("/api/auth/*", toNodeHandler(auth));
+
+// Optionally, register your user routes
+app.use("/users", userRoutes);
+
+// Define your sign-up route if needed (be careful with duplicate definitions)
+app.post("/api/auth/sign-up/email", (req, res) => {
+  // Handle the sign-up request logic
+  res.send("Success");
 });
 
-app.post("/", async (req: any, res: any) => {
-  const { comment } = req.body;
-  await pool.query("INSERT INTO test (comment) VALUES ($1);", [comment]);
+// Other example routes
+app.get("/", async (req, res) => {
+  res.json("data.rows");
+});
+
+app.post("/", async (req, res) => {
   res.status(200).send("Success");
 });
 
