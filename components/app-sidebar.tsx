@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import * as React from "react";
 import {
   Sidebar,
@@ -74,27 +75,26 @@ const data: { navMain: NavItem[] } = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar {...props}>
-      <SidebarHeader className="flex items-center">
+    <Sidebar {...props} className="h-screen">
+      <SidebarHeader className="flex items-center my-6">
         <img src="/logo.svg" alt="Logo" className="max-w-46" />
       </SidebarHeader>
       <SidebarContent>
-        {/* We create a SidebarGroup for each parent. */}
         <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {data.navMain.map((item) => (
-                <SidebarMenuItem key={item.title}>
+          <SidebarMenu>
+            {data.navMain.map((item) => (
+              <Link key={item.title} href={item.url}>
+                <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <div className="flex items-center">
                       <DynamicIcon name={item.icon} />
-                      <Link href={item.url}>{item.title}</Link>
+                      <p>{item.title}</p>
                     </div>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
+              </Link>
+            ))}
+          </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
