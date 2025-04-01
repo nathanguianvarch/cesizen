@@ -1,82 +1,12 @@
-import { AppSidebar } from "@/components/app-sidebar";
+import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import {
-  Activity,
-  BookText,
-  ChartSpline,
-  Home,
-  List,
-  Smile,
-} from "lucide-react";
-import { DynamicIcon, IconName } from "lucide-react/dynamic";
+import { Activity, BookOpen, Brain, Heart, Smile, Users } from "lucide-react";
 import Link from "next/link";
-
-const data: { navMain: { title: string; url: string; icon: IconName }[] } = {
-  navMain: [
-    {
-      title: "Accueil",
-      url: "/",
-      icon: "home",
-    },
-    {
-      title: "Informations",
-      url: "/informations",
-      icon: "book-text",
-    },
-    {
-      title: "Diagnostics",
-      url: "/diagnostics",
-      icon: "chart-spline",
-    },
-    {
-      title: "Exercices",
-      url: "/exercices",
-      icon: "activity",
-    },
-    {
-      title: "Activités",
-      url: "/activities",
-      icon: "list",
-    },
-    {
-      title: "Émotions",
-      url: "/emotions",
-      icon: "smile",
-    },
-  ],
-};
 
 export default function Page() {
   return (
-    <div className="bg-gradient-to-b from-slate-100 to-slate-50">
-      <div className="flex justify-between flex-row p-5 gap-5 justify-center items-center">
-        <div className="flex-1 flex justify-start">
-          <img src="/logo.svg" alt="Logo" className="w-40 h-auto" />
-        </div>
-        <div className="flex-1 flex justify-center">
-          <div className="bg-slate-100 flex flex sm:flex-col md:flex-row gap-3 p-3 rounded-xl h-fit shadow items-center">
-            {data.navMain.map((item) => (
-              <Link href="/" className="text-md font-semibold" key={item.title}>
-                <div className="flex flex-row gap-2 bg-slate-700 rounded-xl px-2.5 py-2 h-fit hover:bg-slate-600 items-center transition">
-                  <DynamicIcon name={item.icon} color="white" />
-                  <p className="sm:hidden xl:block text-white">{item.title}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-        <div className="flex-1 flex justify-end">
-          <div className="bg-slate-100 flex sm:flex-col md:flex-row gap-3 p-3 rounded-xl shadow items-center">
-            <Link href="/" className="text-md font-semibold">
-              <div className="flex flex-row gap-2 bg-slate-600 rounded-xl px-2.5 py-2 hover:bg-slate-500 items-center">
-                <DynamicIcon name="user" />
-                <p className="sm:hidden xl:block">Nathan Guianvarch</p>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </div>
+    <div className="bg-slate-100">
+      <Navbar />
       <div className="w-full">
         <section className="w-full py-12 md:py-24 lg:py-32  dark:from-blue-950 dark:to-background flex justify-center">
           <div className="container px-4 md:px-6">
@@ -122,6 +52,85 @@ export default function Page() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="w-full py-12 md:py-24 lg:py-32  dark:from-blue-950 dark:to-background flex justify-center">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <div className="inline-block rounded-lg bg-slate-700 px-3 py-1 text-sm text-primary-foreground">
+                  Fonctionnalités
+                </div>
+                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
+                  Tout ce dont vous avez besoin pour votre bien-être mental
+                </h2>
+                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  CESIZen vous propose des outils complets pour comprendre et
+                  améliorer votre santé mentale au quotidien.
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 py-12 md:grid-cols-2 lg:grid-cols-3">
+              <div className="flex flex-col items-center space-y-2 rounded-xl p-6 shadow">
+                <div className="rounded-full bg-slate-700 p-4">
+                  <BookOpen className="h-6 w-6 text-primary" color="white" />
+                </div>
+                <h3 className="text-xl font-bold">Informations</h3>
+                <p className="text-center text-muted-foreground">
+                  Accédez à des ressources fiables sur la santé mentale et sa
+                  prévention.
+                </p>
+              </div>
+              <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
+                <div className="rounded-full bg-primary/10 p-4">
+                  <Brain className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold">Diagnostics</h3>
+                <p className="text-center text-muted-foreground">
+                  Évaluez votre niveau de stress avec des outils
+                  d'auto-diagnostic.
+                </p>
+              </div>
+              <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
+                <div className="rounded-full bg-primary/10 p-4">
+                  <Heart className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold">Exercices de respiration</h3>
+                <p className="text-center text-muted-foreground">
+                  Pratiquez la cohérence cardiaque avec des exercices
+                  personnalisables.
+                </p>
+              </div>
+              <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
+                <div className="rounded-full bg-primary/10 p-4">
+                  <Activity className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold">Activités de détente</h3>
+                <p className="text-center text-muted-foreground">
+                  Découvrez des activités pour vous détendre et réduire votre
+                  stress.
+                </p>
+              </div>
+              <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
+                <div className="rounded-full bg-primary/10 p-4">
+                  <Smile className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold">Tracker d'émotions</h3>
+                <p className="text-center text-muted-foreground">
+                  Suivez vos émotions au quotidien et visualisez leur évolution.
+                </p>
+              </div>
+              <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
+                <div className="rounded-full bg-primary/10 p-4">
+                  <Users className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold">Comptes personnalisés</h3>
+                <p className="text-center text-muted-foreground">
+                  Créez votre compte pour sauvegarder vos préférences et suivre
+                  vos progrès.
+                </p>
               </div>
             </div>
           </div>
