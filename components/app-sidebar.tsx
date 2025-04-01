@@ -5,7 +5,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -81,13 +80,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarMenu>
+          <SidebarMenu className="gap-4">
             {data.navMain.map((item) => (
               <Link key={item.title} href={item.url}>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <div className="flex items-center">
-                      <DynamicIcon name={item.icon} />
+                  <SidebarMenuButton asChild className="h-12">
+                    <div className="flex items-center text-xl">
+                      <DynamicIcon name="camera" color="red" size={48} />
                       <p>{item.title}</p>
                     </div>
                   </SidebarMenuButton>
