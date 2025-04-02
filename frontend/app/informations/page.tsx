@@ -6,7 +6,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/frontend/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Informations - CESIZen",
