@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 
@@ -24,7 +25,7 @@ export default function Home() {
   };
   return (
     <div>
-      <button onClick={signin}>connect</button>
+      <Button onClick={signin}>connect</Button>
       <p>{username}</p>
     </div>
   );
