@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/sidebar";
 import { UserData } from "./app-sidebar";
 import { User } from "@supabase/supabase-js";
+import { redirect } from "next/navigation";
 
 type NavUserProps = {
   user: User & UserData;
@@ -64,7 +65,7 @@ export function NavUser({ user, logout }: NavUserProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => redirect("/account")}>
                 <UserIcon />
                 Mon compte
               </DropdownMenuItem>

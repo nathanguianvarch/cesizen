@@ -13,45 +13,34 @@ import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { User } from "@supabase/supabase-js";
+import { redirect } from "next/navigation";
+import NavAdmin from "./nav-admin";
 
 export interface UserData {
   firstName: string;
   lastName: string;
+  active: boolean;
+  role: number;
 }
 
-type FullUser = User & UserData;
-
 const data = {
-  navMain: [
-    {
-      title: "Application",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        { title: "Informations", url: "#" },
-        { title: "Diagnotics", url: "#" },
-        { title: "Exercices", url: "#" },
-        { title: "Activités", url: "#" },
-        { title: "Emotions", url: "#" },
-      ],
-    },
-    {
-      title: "Administrateur",
-      url: "#",
-      icon: Bot,
-      items: [{ title: "Genesis", url: "#" }],
-    },
-  ],
-  projects: [
-    { name: "Design Engineering", url: "#", icon: Frame },
-    { name: "Sales & Marketing", url: "#", icon: PieChart },
-    { name: "Travel", url: "#", icon: Map },
-  ],
+  navMain: {
+    title: "Application",
+    url: "#",
+    icon: SquareTerminal,
+    isActive: true,
+    items: [
+      { title: "Informations", url: "/informations" },
+      { title: "Diagnotics", url: "/diagnostics" },
+      { title: "Exercices", url: "/exercices" },
+      { title: "Activités", url: "/activities" },
+      { title: "Emotions", url: "/emotions" },
+    ],
+  },
 };
 
 export function AppSidebar() {
-  const [user, setUser] = useState<FullUser | null>(null);
+  const [user, setUser] = useState<(User & UserData) | null>(null);
 
   const logout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -88,21 +77,6 @@ export function AppSidebar() {
     fetchUser();
   }, []);
 
-  const login = async () => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: "nathanguianvarch@gmail.com",
-      password: "Nathan240904", // ⚠️ à remplacer par une variable d'environnement ou supprimé après test
-    });
-
-    fetchUser();
-
-    if (error) {
-      console.error("Erreur lors de la connexion :", error.message);
-    } else {
-      console.log("Connexion réussie :", data);
-    }
-  };
-
   return (
     <Sidebar>
       <SidebarHeader />
@@ -110,10 +84,11 @@ export function AppSidebar() {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
+        {user && user.role === 1 ? <NavAdmin /> : ""}
         {user ? (
           <NavUser user={user} logout={logout} />
         ) : (
-          <Button onClick={login}>Se connecter</Button>
+          <Button onClick={() => redirect("/auth/login")}>Se connecter</Button>
         )}
       </SidebarFooter>
     </Sidebar>
