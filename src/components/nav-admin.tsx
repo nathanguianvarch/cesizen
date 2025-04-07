@@ -15,7 +15,7 @@ const data = {
     url: "#",
     icon: SquareTerminal,
     isActive: true,
-    items: [{ title: "Gérer les utilisateurs", url: "#" }],
+    items: [{ title: "Gérer les utilisateurs", url: "/admin/users" }],
   },
 };
 

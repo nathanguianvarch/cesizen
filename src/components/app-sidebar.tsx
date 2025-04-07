@@ -15,6 +15,7 @@ import { Button } from "./ui/button";
 import { User } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 import NavAdmin from "./nav-admin";
+import LoginDialog from "./LoginDialog";
 
 export interface UserData {
   firstName: string;
@@ -30,7 +31,7 @@ const data = {
     icon: SquareTerminal,
     isActive: true,
     items: [
-      { title: "Informations", url: "/informations" },
+      { icon: "plus", title: "Informations", url: "/informations" },
       { title: "Diagnotics", url: "/diagnostics" },
       { title: "Exercices", url: "/exercices" },
       { title: "Activités", url: "/activities" },
@@ -85,11 +86,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         {user && user.role === 1 ? <NavAdmin /> : ""}
-        {user ? (
-          <NavUser user={user} logout={logout} />
-        ) : (
-          <Button onClick={() => redirect("/auth/login")}>Se connecter</Button>
-        )}
+        {user ? <NavUser user={user} logout={logout} /> : <LoginDialog />}
       </SidebarFooter>
     </Sidebar>
   );

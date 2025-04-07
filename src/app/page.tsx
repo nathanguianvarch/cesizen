@@ -1,4 +1,5 @@
 "use client";
+import LoginDialog from "@/components/LoginDialog";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";

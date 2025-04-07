@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { Button } from "@/components/ui/button";
 import {
@@ -74,12 +75,12 @@ export default function LoginPage() {
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
+            Vous n'avez pas de compte?{" "}
             <Link
               href="/auth/register"
               className="underline underline-offset-4"
             >
-              Sign up
+              S'inscrire
             </Link>
           </div>
         </CardContent>

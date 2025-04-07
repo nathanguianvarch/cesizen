@@ -1,6 +1,11 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, User as UserIcon } from "lucide-react";
+import {
+  ChevronsUpDown,
+  EllipsisVertical,
+  LogOut,
+  User as UserIcon,
+} from "lucide-react";
 
 import {
   DropdownMenu,
@@ -39,12 +44,12 @@ export function NavUser({ user, logout }: NavUserProps) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate text-xs font-bold">
+                <span className="truncate font-bold">
                   {user.firstName + " " + user.lastName}
                 </span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate text-md">{user.email}</span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <EllipsisVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
