@@ -6,16 +6,15 @@ import {
   SidebarFooter,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { Bot, Frame, PieChart, SquareTerminal, Map } from "lucide-react";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
-import { Button } from "./ui/button";
 import { User } from "@supabase/supabase-js";
-import { redirect } from "next/navigation";
 import NavAdmin from "./nav-admin";
 import LoginDialog from "./LoginDialog";
+import { IconName } from "lucide-react/dynamic";
+import { AuthDialog } from "./AuthDialog";
 
 export interface UserData {
   firstName: string;
@@ -24,21 +23,17 @@ export interface UserData {
   role: number;
 }
 
-const data = {
-  navMain: {
-    title: "Application",
-    url: "#",
-    icon: SquareTerminal,
-    isActive: true,
-    items: [
-      { icon: "plus", title: "Informations", url: "/informations" },
-      { title: "Diagnotics", url: "/diagnostics" },
-      { title: "Exercices", url: "/exercices" },
-      { title: "Activités", url: "/activities" },
-      { title: "Emotions", url: "/emotions" },
-    ],
-  },
-};
+const data: {
+  title: string;
+  url: string;
+  icon?: IconName;
+}[] = [
+  { title: "Informations", url: "/informations", icon: "book-text" },
+  { title: "Diagnotics", url: "/diagnostics", icon: "chart-spline" },
+  { title: "Exercices", url: "/exercices", icon: "activity" },
+  { title: "Activités", url: "/activities", icon: "list" },
+  { title: "Emotions", url: "/emotions", icon: "smile" },
+];
 
 export function AppSidebar() {
   const [user, setUser] = useState<(User & UserData) | null>(null);
@@ -82,11 +77,11 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader />
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={data} />
       </SidebarContent>
       <SidebarFooter>
         {user && user.role === 1 ? <NavAdmin /> : ""}
-        {user ? <NavUser user={user} logout={logout} /> : <LoginDialog />}
+        {user ? <NavUser user={user} logout={logout} /> : <AuthDialog />}
       </SidebarFooter>
     </Sidebar>
   );

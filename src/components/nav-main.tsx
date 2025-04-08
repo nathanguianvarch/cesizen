@@ -1,6 +1,4 @@
 "use client";
-
-import { type LucideIcon } from "lucide-react";
 import {
   SidebarGroup,
   SidebarMenu,
@@ -11,40 +9,32 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { DynamicIcon, IconName } from "lucide-react/dynamic";
 
 export function NavMain({
   items,
 }: {
-  items: {
+  items?: {
     title: string;
     url: string;
-    icon?: LucideIcon;
-    isActive?: boolean;
-    items?: {
-      title: string;
-      url: string;
-    }[];
-  };
+    icon?: IconName;
+  }[];
 }) {
   return (
     <SidebarGroup>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip={items.title}>
-            {items.icon && <items.icon />}
-            <span>{items.title}</span>
-          </SidebarMenuButton>
-          <SidebarMenuSub>
-            {items.items?.map((subItem) => (
-              <SidebarMenuSubItem key={subItem.title}>
-                <SidebarMenuSubButton asChild>
-                  <Link href={subItem.url}>
-                    <span>{subItem.title}</span>
-                  </Link>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
-            ))}
-          </SidebarMenuSub>
+          {items?.map((subItem) => (
+            <SidebarMenuSubItem key={subItem.title}>
+              <SidebarMenuSubButton asChild>
+                <Link href={subItem.url}>
+                  {subItem.icon ? <DynamicIcon name={subItem.icon} /> : ""}
+
+                  <span>{subItem.title}</span>
+                </Link>
+              </SidebarMenuSubButton>
+            </SidebarMenuSubItem>
+          ))}
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>

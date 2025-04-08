@@ -1,22 +1,14 @@
-import { SquareTerminal } from "lucide-react";
+import { UserCog } from "lucide-react";
 import {
   SidebarGroup,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "./ui/sidebar";
 
 const data = {
-  navAdmin: {
-    title: "Application",
-    url: "#",
-    icon: SquareTerminal,
-    isActive: true,
-    items: [{ title: "Gérer les utilisateurs", url: "/admin/users" }],
-  },
+  navAdmin: [{ title: "Gérer les utilisateurs", url: "/admin/users" }],
 };
 
 export default function NavAdmin() {
@@ -24,21 +16,18 @@ export default function NavAdmin() {
     <SidebarGroup>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip={data.navAdmin.title}>
-            <data.navAdmin.icon />
-            <span>{data.navAdmin.title}</span>
-          </SidebarMenuButton>
-          <SidebarMenuSub>
-            {data.navAdmin.items?.map((subItem) => (
-              <SidebarMenuSubItem key={subItem.title}>
-                <SidebarMenuSubButton asChild>
-                  <a href={subItem.url}>
+          {data.navAdmin.map((subItem) => (
+            <SidebarMenuSubItem key={subItem.title}>
+              <SidebarMenuSubButton asChild>
+                <a href={subItem.url}>
+                  <div className="flex flex-row gap-2 items-center">
+                    <UserCog />
                     <span>{subItem.title}</span>
-                  </a>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
-            ))}
-          </SidebarMenuSub>
+                  </div>
+                </a>
+              </SidebarMenuSubButton>
+            </SidebarMenuSubItem>
+          ))}
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>

@@ -7,14 +7,6 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
-
 export default function LoginDialog() {
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,55 +25,44 @@ export default function LoginDialog() {
     }
   };
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button>Se connecter</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[400px]">
-        <DialogHeader>
-          <DialogTitle>Se connecter</DialogTitle>
-        </DialogHeader>
-        <div className="flex flex-col gap-6">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="mail@example.com"
-              required
-              value={mail}
-              onChange={(e) => setMail(e.target.value)}
-            />
-          </div>
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              <a
-                href="#"
-                className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-              >
-                Mot de passe oublié?
-              </a>
-            </div>
-            <Input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <Button type="submit" className="w-full" onClick={() => login()}>
-            Se connecter
-          </Button>
+    <div className="flex flex-col gap-6 items-center">
+      <div className="flex flex-col gap-4 w-full">
+        <div className="flex flex-col gap-2">
+          <Label>Email</Label>
+          <Input
+            placeholder="mail@example.com"
+            required
+            value={mail}
+            onChange={(e) => setMail(e.target.value)}
+          />
         </div>
-        <div className="mt-4 text-center text-sm">
-          Vous n'avez pas de compte?{" "}
-          <Link href="/auth/register" className="underline underline-offset-4">
-            S'inscrire
-          </Link>
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-row">
+            <Label>Password</Label>
+            <a
+              href="#"
+              className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+            >
+              Mot de passe oublié?
+            </a>
+          </div>
+          <Input
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
-      </DialogContent>
-    </Dialog>
+        <Button type="submit" onClick={() => login()}>
+          Se connecter
+        </Button>
+      </div>
+      <div>
+        Vous n'avez pas de compte?{" "}
+        <Link href="/auth/register" className="underline underline-offset-4">
+          S'inscrire
+        </Link>
+      </div>
+    </div>
   );
 }
