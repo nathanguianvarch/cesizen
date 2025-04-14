@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ChevronsUpDown,
-  EllipsisVertical,
-  LogOut,
-  User as UserIcon,
-} from "lucide-react";
+import { EllipsisVertical, LogOut, User as UserIcon } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -22,7 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { UserData } from "./app-sidebar";
+import { UserData } from "./AppSidebar";
 import { User } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 

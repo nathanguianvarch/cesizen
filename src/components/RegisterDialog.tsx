@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,7 +37,16 @@ export default function RegisterPage() {
     } else {
       setSubmitDisabled(true);
     }
-  }, [lastName, firstName, email, password, confirmPassword]);
+  }, [
+    lastName,
+    firstName,
+    email,
+    password,
+    confirmPassword,
+    emailError,
+    passwordError,
+    confirmPasswordError,
+  ]);
 
   const register = async () => {
     setLoading(true);
@@ -50,7 +60,7 @@ export default function RegisterPage() {
     if (error) {
       toast.error(error.message);
     } else {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("user_data")
         .insert([{ id: user?.id, firstName: firstName, lastName: lastName }])
         .select();
@@ -196,8 +206,8 @@ export default function RegisterPage() {
           S'inscrire
         </Button>
       </div>
-      <div>
-        Vous avez déjà un compte ?{" "}
+      <div className="flex flex-col justify-center items-center">
+        <p>Vous avez déjà un compte ?</p>
         <Link href="/auth/login" className="underline underline-offset-4">
           Se connecter
         </Link>

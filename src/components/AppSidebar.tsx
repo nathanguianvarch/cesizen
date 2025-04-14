@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import {
@@ -6,13 +7,12 @@ import {
   SidebarFooter,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { NavMain } from "./nav-main";
-import { NavUser } from "./nav-user";
+import { NavMain } from "./NavMain";
+import { NavUser } from "./NavUser";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
-import NavAdmin from "./nav-admin";
-import LoginDialog from "./LoginDialog";
+import NavAdmin from "./NavAdmin";
 import { IconName } from "lucide-react/dynamic";
 import { AuthDialog } from "./AuthDialog";
 
@@ -28,6 +28,7 @@ const data: {
   url: string;
   icon?: IconName;
 }[] = [
+  { title: "Accueil", url: "/", icon: "home" },
   { title: "Informations", url: "/informations", icon: "book-text" },
   { title: "Diagnotics", url: "/diagnostics", icon: "chart-spline" },
   { title: "Exercices", url: "/exercices", icon: "activity" },
@@ -75,12 +76,14 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader />
+      <SidebarHeader className="flex items-center my-5">
+        <img src="logo.svg" alt="" className="w-46" />
+      </SidebarHeader>
       <SidebarContent>
         <NavMain items={data} />
+        {user && user.role === 1 ? <NavAdmin /> : ""}
       </SidebarContent>
       <SidebarFooter>
-        {user && user.role === 1 ? <NavAdmin /> : ""}
         {user ? <NavUser user={user} logout={logout} /> : <AuthDialog />}
       </SidebarFooter>
     </Sidebar>

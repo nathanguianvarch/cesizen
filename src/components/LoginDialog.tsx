@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 export default function LoginDialog() {
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +19,7 @@ export default function LoginDialog() {
     });
 
     if (error) {
-      console.error("Erreur lors de la connexion :", error.message);
+      toast.error(error.message);
     } else {
       console.log("Connexion réussie :", data);
       redirect("/home");
