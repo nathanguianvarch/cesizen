@@ -10,11 +10,11 @@ import {
 import { NavMain } from "./NavMain";
 import { NavUser } from "./NavUser";
 import { supabase } from "@/lib/supabase";
-import { useEffect, useState } from "react";
-import { User } from "@supabase/supabase-js";
+import { useEffect } from "react";
 import NavAdmin from "./NavAdmin";
 import { IconName } from "lucide-react/dynamic";
-import { AuthDialog } from "./AuthDialog";
+import { AuthDialog } from "../auth/AuthDialog";
+import { useUser } from "@/context/UserContext";
 
 export interface UserData {
   firstName: string;
@@ -37,14 +37,14 @@ const data: {
 ];
 
 export function AppSidebar() {
-  const [user, setUser] = useState<(User & UserData) | null>(null);
+  const { user } = useUser();
 
   const logout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.log(error);
     }
-    setUser(null);
+    // setUser(null);
 
     console.log("ok");
   };
@@ -64,7 +64,6 @@ export function AppSidebar() {
     console.log(userData);
 
     if (!error && userData) {
-      setUser({ ...user, ...userData });
     } else {
       console.error("Erreur lors de la récupération de userData :", error);
     }

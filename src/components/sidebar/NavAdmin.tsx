@@ -1,12 +1,6 @@
 import { UserCog } from "lucide-react";
-import {
-  SidebarGroup,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-} from "./ui/sidebar";
 import Link from "next/link";
+import { SidebarGroup, SidebarMenu, SidebarMenuItem } from "../ui/sidebar";
 
 const data = {
   navAdmin: [{ title: "Gérer les utilisateurs", url: "/admin/users" }],

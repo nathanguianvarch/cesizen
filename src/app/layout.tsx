@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import { Toaster } from "sonner";
+import { UserProvider } from "@/context/UserContext";
 
 export const metadata: Metadata = {
   title: "CESI Zen",
@@ -17,13 +18,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SidebarProvider>
-          <AppSidebar />
-          <main className="w-full">
-            <Toaster richColors />
-            {children}
-          </main>
-        </SidebarProvider>
+        <UserProvider>
+          <SidebarProvider>
+            <AppSidebar />
+            <main className="w-full">
+              <Toaster richColors />
+              {children}
+            </main>
+          </SidebarProvider>
+        </UserProvider>
       </body>
     </html>
   );

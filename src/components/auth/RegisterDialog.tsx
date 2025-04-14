@@ -3,14 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/lib/supabase";
+import { register, verifyEmailSyntax, verifyPasswordMatch } from "@/tools/auth";
 import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
-export default function RegisterPage() {
+export default function RegisterPage({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -48,61 +46,20 @@ export default function RegisterPage() {
     confirmPasswordError,
   ]);
 
-  const register = async () => {
+  const handleSubmit = async () => {
     setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-
-    const user = data.user;
-
-    if (error) {
-      toast.error(error.message);
-    } else {
-      const { error } = await supabase
-        .from("user_data")
-        .insert([{ id: user?.id, firstName: firstName, lastName: lastName }])
-        .select();
-      if (error) {
-        toast.error(error.message);
-      } else {
-        redirect("/");
-      }
-    }
-    setLoading(false);
+    register({ email, password }, { firstName, lastName }, onClose);
   };
 
-  const verifyEmailSyntax = (email: string) => {
-    if (email.length !== 0) {
-      const regex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-      if (!regex.test(email)) {
-        setEmailError("Vérifiez le format de votre email.");
-      } else {
-        setEmailError("");
-      }
-    } else {
-      setEmailError("");
-    }
-  };
+  useEffect(() => {
+    setEmailError(verifyEmailSyntax(email));
+  }, [email]);
 
-  const verifyPasswordMatch = (pwd: string, confirmPwd: string) => {
-    if (pwd.length === 0 || confirmPwd.length === 0) {
-      setPasswordError("");
-      setConfirmPasswordError("");
-      return;
-    }
+  useEffect(() => {
+    setPasswordError(verifyPasswordMatch(password, confirmPassword));
+    setConfirmPasswordError(verifyPasswordMatch(password, confirmPassword));
+  }, [password, confirmPassword]);
 
-    if (pwd !== confirmPwd) {
-      setPasswordError("Le mot de passe de confirmation ne correspond pas.");
-      setConfirmPasswordError(
-        "Le mot de passe de confirmation ne correspond pas."
-      );
-    } else {
-      setPasswordError("");
-      setConfirmPasswordError("");
-    }
-  };
   return (
     <div className="flex flex-col gap-6 items-center">
       <div className="flex flex-col gap-4 w-full">
@@ -114,7 +71,6 @@ export default function RegisterPage() {
             required
             onChange={(e) => {
               setEmail(e.target.value);
-              verifyEmailSyntax(e.target.value);
             }}
             value={email}
           />
@@ -156,7 +112,6 @@ export default function RegisterPage() {
             required
             onChange={(e) => {
               setPassword(e.target.value);
-              verifyPasswordMatch(e.target.value, confirmPassword);
             }}
             value={password}
           />
@@ -178,7 +133,6 @@ export default function RegisterPage() {
             required
             onChange={(e) => {
               setConfirmPassword(e.target.value);
-              verifyPasswordMatch(e.target.value, confirmPassword);
             }}
             value={confirmPassword}
           />
@@ -195,7 +149,7 @@ export default function RegisterPage() {
         <Button
           type="submit"
           className="w-full"
-          onClick={register}
+          onClick={handleSubmit}
           disabled={submitDisabled}
         >
           {loading ? (

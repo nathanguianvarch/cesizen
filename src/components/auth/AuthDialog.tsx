@@ -9,12 +9,22 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoginDialog from "./LoginDialog";
 import RegisterPage from "./RegisterDialog";
+import { useState } from "react";
 
 export function AuthDialog() {
+  const [open, setOpen] = useState(false);
+
+  const handleClose = (): void => {
+    setOpen(false);
+  };
+  const handleOpen = (): void => {
+    setOpen(true);
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Se connecter</Button>
+        <Button onClick={handleOpen}>Se connecter</Button>
       </DialogTrigger>
       <DialogTitle></DialogTitle>
       <DialogContent className="w-[350px]">
@@ -26,10 +36,10 @@ export function AuthDialog() {
             </TabsList>
           </div>
           <TabsContent value="login">
-            <LoginDialog />
+            <LoginDialog onClose={handleClose} />
           </TabsContent>
           <TabsContent value="register">
-            <RegisterPage />
+            <RegisterPage onClose={handleClose} />
           </TabsContent>
         </Tabs>
       </DialogContent>

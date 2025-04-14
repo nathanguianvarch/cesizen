@@ -3,39 +3,39 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/lib/supabase";
+import { login, verifyEmailSyntax } from "@/tools/auth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
-export default function LoginDialog() {
-  const [mail, setMail] = useState("");
+import { useEffect, useState } from "react";
+export default function LoginDialog({ onClose }: { onClose: () => void }) {
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
 
-  const login = async () => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: mail,
-      password: password,
-    });
+  useEffect(() => {
+    setEmailError(verifyEmailSyntax(email));
+  }, [email]);
 
-    if (error) {
-      toast.error(error.message);
-    } else {
-      console.log("Connexion réussie :", data);
-      redirect("/home");
-    }
-  };
   return (
     <div className="flex flex-col gap-6 items-center">
       <div className="flex flex-col gap-4 w-full">
         <div className="flex flex-col gap-2">
           <Label>Email</Label>
           <Input
+            type="email"
             placeholder="mail@example.com"
             required
-            value={mail}
-            onChange={(e) => setMail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+            value={email}
           />
+          {emailError ? (
+            <div>
+              <Label className="text-red-600 text-xs">{emailError}</Label>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex flex-row">
@@ -54,7 +54,12 @@ export default function LoginDialog() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <Button type="submit" onClick={() => login()}>
+        <Button
+          type="submit"
+          onClick={async () => {
+            await login({ email, password }, onClose);
+          }}
+        >
           Se connecter
         </Button>
       </div>

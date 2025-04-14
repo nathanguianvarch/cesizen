@@ -44,7 +44,7 @@ const data: {
     icon: "activity",
   },
   {
-    title: "Information",
+    title: "a",
     description:
       "Apprenez-en plus sur la santé mentale et la gestion du stress. Accédez à des ressources et des articles sur la santé mentale, la prévention du stress et des stratégies de bien-être.",
     url: "/informations",
