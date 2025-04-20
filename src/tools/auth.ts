@@ -11,7 +11,7 @@ export const login = async (credentials: SignInWithPasswordCredentials, onClose:
   }
 };
 
-export const register = async (credentials: SignInWithPasswordCredentials, userData: {firstName: string, lastName: string}, onClose: () => void) => {
+export const register = async (credentials: SignInWithPasswordCredentials, userData: {firstname: string, lastname: string}, onClose: () => void) => {
   const { data, error } = await supabase.auth.signUp(credentials);
   const user = data.user;
 
@@ -20,8 +20,8 @@ export const register = async (credentials: SignInWithPasswordCredentials, userD
   } else {
     if(user) {
       const { error } = await supabase
-      .from("user_data")
-      .insert([{id: user.id, firstName: userData.firstName, lastName: userData.lastName}])
+      .from("profile")
+      .insert([{id: user.id, firstname: userData.firstname, lastname: userData.lastname}])
       .select();
       if (error) {
         toast.error(error.message);

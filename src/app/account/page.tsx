@@ -1,17 +1,19 @@
 "use client";
-import { UserData } from "@/components/sidebar/AppSidebar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
+import { Database } from "../../../database.types";
 
 export default function AccountPage() {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [user, setUser] = useState<(User & UserData) | null>(null);
+  const [user, setUser] = useState<
+    (User & Database["public"]["Tables"]["profile"]["Row"]) | null
+  >(null);
   const fetchUser = async () => {
     const {
       data: { user },
@@ -19,22 +21,22 @@ export default function AccountPage() {
 
     if (!user) return;
 
-    const { data: userData, error } = await supabase
-      .from("user_data")
+    const { data: profile, error } = await supabase
+      .from("profile")
       .select("*")
       .eq("id", user.id)
       .single();
-    console.log(userData);
+    console.log(profile);
 
-    if (!error && userData) {
-      setUser({ ...user, ...userData });
+    if (!error && profile) {
+      setUser({ ...user, ...profile });
       if (user.email) {
         setEmail(user.email);
-        setLastName(userData.lastName);
-        setFirstName(userData.firstName);
+        setLastName(profile.lastname);
+        setFirstName(profile.firstname);
       }
     } else {
-      console.error("Erreur lors de la récupération de userData :", error);
+      console.error("Erreur lors de la récupération du profile :", error);
     }
   };
 
@@ -44,8 +46,8 @@ export default function AccountPage() {
   return (
     <div>
       <p>{user?.email}</p>
-      <p>{user?.firstName}</p>
-      <p>{user?.lastName}</p>
+      <p>{user?.firstname}</p>
+      <p>{user?.lastname}</p>
       <h1>Modifier son compte</h1>
       <div className="flex flex-col gap-2">
         <Label>Email</Label>

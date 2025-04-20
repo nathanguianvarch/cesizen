@@ -10,18 +10,13 @@ import {
 import { NavMain } from "./NavMain";
 import { NavUser } from "./NavUser";
 import { supabase } from "@/lib/supabase";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import NavAdmin from "./NavAdmin";
 import { IconName } from "lucide-react/dynamic";
 import { AuthDialog } from "../auth/AuthDialog";
-import { useUser } from "@/context/UserContext";
-
-export interface UserData {
-  firstName: string;
-  lastName: string;
-  active: boolean;
-  role: number;
-}
+import { fetchCurrentUser } from "@/tools/user";
+import { User } from "@supabase/supabase-js";
+import { Database } from "../../../database.types";
 
 const data: {
   title: string;
@@ -37,7 +32,10 @@ const data: {
 ];
 
 export function AppSidebar() {
-  const { user } = useUser();
+  const [user, setUser] = useState<{
+    user: User;
+    profile: Database["public"]["Tables"]["profile"]["Row"];
+  } | null>(null);
 
   const logout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -49,38 +47,22 @@ export function AppSidebar() {
     console.log("ok");
   };
 
-  const fetchUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) return;
-
-    const { data: userData, error } = await supabase
-      .from("user_data")
-      .select("*")
-      .eq("id", user.id)
-      .single();
-    console.log(userData);
-
-    if (!error && userData) {
-    } else {
-      console.error("Erreur lors de la récupération de userData :", error);
-    }
-  };
-
   useEffect(() => {
-    fetchUser();
+    const fetchData = async () => {
+      const user = await fetchCurrentUser();
+      setUser(user);
+    };
+    fetchData();
   }, []);
 
   return (
     <Sidebar>
       <SidebarHeader className="flex items-center my-5">
-        <img src="logo.svg" alt="" className="w-46" />
+        <img src="../logo.svg" alt="" className="w-46" />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data} />
-        {user && user.role === 1 ? <NavAdmin /> : ""}
+        {user && user.profile.role === 1 ? <NavAdmin /> : ""}
       </SidebarContent>
       <SidebarFooter>
         {user ? <NavUser user={user} logout={logout} /> : <AuthDialog />}

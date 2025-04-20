@@ -3,7 +3,6 @@ import "./globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import { Toaster } from "sonner";
-import { UserProvider } from "@/context/UserContext";
 
 export const metadata: Metadata = {
   title: "CESI Zen",
@@ -18,15 +17,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <UserProvider>
-          <SidebarProvider>
-            <AppSidebar />
-            <main className="w-full">
-              <Toaster richColors />
-              {children}
-            </main>
-          </SidebarProvider>
-        </UserProvider>
+        <SidebarProvider>
+          <AppSidebar />
+          <main className="w-full">
+            <Toaster richColors />
+            {children}
+          </main>
+        </SidebarProvider>
       </body>
     </html>
   );

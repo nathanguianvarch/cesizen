@@ -9,6 +9,125 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      diagnostic_event: {
+        Row: {
+          created_at: string
+          id: number
+          points: number | null
+          title: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          points?: number | null
+          title?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          points?: number | null
+          title?: string | null
+        }
+        Relationships: []
+      }
+      information: {
+        Row: {
+          category: number | null
+          content: string | null
+          created_at: string
+          id: number
+          image: string | null
+          title: string | null
+          url: string | null
+        }
+        Insert: {
+          category?: number | null
+          content?: string | null
+          created_at?: string
+          id?: number
+          image?: string | null
+          title?: string | null
+          url?: string | null
+        }
+        Update: {
+          category?: number | null
+          content?: string | null
+          created_at?: string
+          id?: number
+          image?: string | null
+          title?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "information_category_fkey"
+            columns: ["category"]
+            isOneToOne: false
+            referencedRelation: "information_category"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      information_category: {
+        Row: {
+          created_at: string
+          id: number
+          title: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          title?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          title?: string | null
+        }
+        Relationships: []
+      }
+      profile: {
+        Row: {
+          active: boolean
+          created_at: string
+          firstname: string
+          id: string
+          lastname: string
+          role: number | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          firstname: string
+          id: string
+          lastname: string
+          role?: number | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          firstname?: string
+          id?: string
+          lastname?: string
+          role?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_data_role_fkey"
+            columns: ["role"]
+            isOneToOne: false
+            referencedRelation: "role"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "user_with_profile"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       role: {
         Row: {
           created_at: string
@@ -27,45 +146,17 @@ export type Database = {
         }
         Relationships: []
       }
-      test: {
+    }
+    Views: {
+      user_with_profile: {
         Row: {
-          created_at: string
-          id: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
-        }
-        Relationships: []
-      }
-      user_data: {
-        Row: {
-          active: boolean
-          created_at: string
-          firstName: string
-          id: string
-          lastName: string
+          active: boolean | null
+          created_at: string | null
+          email: string | null
+          firstname: string | null
+          lastname: string | null
           role: number | null
-        }
-        Insert: {
-          active?: boolean
-          created_at?: string
-          firstName: string
-          id: string
-          lastName: string
-          role?: number | null
-        }
-        Update: {
-          active?: boolean
-          created_at?: string
-          firstName?: string
-          id?: string
-          lastName?: string
-          role?: number | null
+          user_id: string | null
         }
         Relationships: [
           {
@@ -77,9 +168,6 @@ export type Database = {
           },
         ]
       }
-    }
-    Views: {
-      [_ in never]: never
     }
     Functions: {
       [_ in never]: never

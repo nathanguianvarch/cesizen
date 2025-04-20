@@ -17,12 +17,15 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { UserData } from "./AppSidebar";
 import { User } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
+import { Database } from "../../../database.types";
 
 type NavUserProps = {
-  user: User & UserData;
+  user: {
+    user: User;
+    profile: Database["public"]["Tables"]["profile"]["Row"];
+  } | null;
   logout: CallableFunction;
 };
 
@@ -40,9 +43,11 @@ export function NavUser({ user, logout }: NavUserProps) {
             >
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-bold">
-                  {user.firstName + " " + user.lastName}
+                  {user?.profile.firstname +
+                    " " +
+                    user?.profile.lastname.toLocaleUpperCase()}
                 </span>
-                <span className="truncate text-md">{user.email}</span>
+                <span className="truncate text-md">{user?.user.email}</span>
               </div>
               <EllipsisVertical className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -57,9 +62,11 @@ export function NavUser({ user, logout }: NavUserProps) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate text-xs font-bold">
-                    {user.firstName + " " + user.lastName}
+                    {user?.profile.firstname +
+                      " " +
+                      user?.profile.lastname.toLocaleUpperCase()}
                   </span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate text-xs">{user?.user.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
