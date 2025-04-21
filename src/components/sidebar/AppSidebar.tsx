@@ -9,14 +9,14 @@ import {
 } from "@/components/ui/sidebar";
 import { NavMain } from "./NavMain";
 import { NavUser } from "./NavUser";
-import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import NavAdmin from "./NavAdmin";
 import { IconName } from "lucide-react/dynamic";
 import { AuthDialog } from "../auth/AuthDialog";
-import { fetchCurrentUser } from "@/tools/user";
+import { subscribeToCurrentUser } from "@/tools/user";
 import { User } from "@supabase/supabase-js";
 import { Database } from "../../../database.types";
+import { logout } from "@/tools/auth";
 
 const data: {
   title: string;
@@ -37,22 +37,13 @@ export function AppSidebar() {
     profile: Database["public"]["Tables"]["profile"]["Row"];
   } | null>(null);
 
-  const logout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.log(error);
-    }
-    // setUser(null);
-
-    console.log("ok");
-  };
-
   useEffect(() => {
-    const fetchData = async () => {
-      const user = await fetchCurrentUser();
-      setUser(user);
+    const unsubscribe = subscribeToCurrentUser((current) => {
+      setUser(current);
+    });
+    return () => {
+      unsubscribe();
     };
-    fetchData();
   }, []);
 
   return (

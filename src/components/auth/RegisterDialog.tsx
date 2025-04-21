@@ -12,8 +12,8 @@ export default function RegisterPage({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -22,8 +22,8 @@ export default function RegisterPage({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     if (
-      lastName &&
-      firstName &&
+      lastname &&
+      firstname &&
       email &&
       password &&
       confirmPassword &&
@@ -36,8 +36,8 @@ export default function RegisterPage({ onClose }: { onClose: () => void }) {
       setSubmitDisabled(true);
     }
   }, [
-    lastName,
-    firstName,
+    lastname,
+    firstname,
     email,
     password,
     confirmPassword,
@@ -48,7 +48,8 @@ export default function RegisterPage({ onClose }: { onClose: () => void }) {
 
   const handleSubmit = async () => {
     setLoading(true);
-    register({ email, password }, { firstName, lastName }, onClose);
+    register({ email, password }, { firstname, lastname }, onClose);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -87,9 +88,9 @@ export default function RegisterPage({ onClose }: { onClose: () => void }) {
           <Input
             required
             onChange={(e) => {
-              setLastName(e.target.value);
+              setLastname(e.target.value);
             }}
-            value={lastName}
+            value={lastname}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -97,9 +98,9 @@ export default function RegisterPage({ onClose }: { onClose: () => void }) {
           <Input
             required
             onChange={(e) => {
-              setFirstName(e.target.value);
+              setFirstname(e.target.value);
             }}
-            value={firstName}
+            value={firstname}
           />
         </div>
         <div className="flex flex-col gap-2">

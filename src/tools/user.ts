@@ -73,3 +73,29 @@ export const getRoleName = async (roleId: number): Promise<string | null> => {
 
   return role?.name ?? null;
 };
+
+/**
+ * Subscribe to authentication state changes and automatically fetch the current user and profile.
+ * Calls the provided callback with { user, profile } or null when signed out.
+ * @param callback - Function to receive the updated user data or null.
+ * @returns Unsubscribe function to stop listening.
+ */
+export const subscribeToCurrentUser = (callback: (current: { user: User; profile: Database["public"]["Tables"]["profile"]["Row"] } | null) => void) => {
+  // Fetch initial user state
+  fetchCurrentUser().then(callback);
+
+  // Listen for auth state changes
+  const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    if (session?.user) {
+      const updated = await fetchCurrentUser();
+      callback(updated);
+    } else {
+      callback(null);
+    }
+  });
+
+  // Return an unsubscribe function
+  return () => {
+    subscription.unsubscribe();
+  };
+};

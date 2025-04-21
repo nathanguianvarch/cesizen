@@ -3,11 +3,25 @@ import { SignInWithPasswordCredentials } from "@supabase/supabase-js";
 import { toast } from "sonner";
 
 export const login = async (credentials: SignInWithPasswordCredentials, onClose: () => void) => {
-  const { error } = await supabase.auth.signInWithPassword(credentials);
+  const {data, error } = await supabase.auth.signInWithPassword(credentials);
   if (error) {
     toast.error("Erreur lors de la connexion : " + error.message)
   } else {
-    onClose();
+    const { data: profile, error: profileError } = await supabase
+    .from("profile")
+    .select("*")
+    .eq("id", data.user.id)
+    .single();
+    if(profileError) {
+      toast.error("Erreur lors de la connexion : " + profileError.message)
+    } else {
+      if(profile.active) {
+        onClose();
+      } else {
+        toast.error("Compte désactivé")
+        await logout()
+      }
+    }
   }
 };
 
@@ -29,6 +43,12 @@ export const register = async (credentials: SignInWithPasswordCredentials, userD
         onClose()
       }
     }
+  }
+};
+export const logout = async () => {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    toast.error(error.message);
   }
 };
 
