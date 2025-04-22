@@ -113,7 +113,7 @@ export default function ManageUsers() {
                 onClick={() => navigator.clipboard.writeText(user.user.id)}
               >
                 <Clipboard />
-                Copier l'ID
+                Copier l&apos;ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               {user.profile.active ? (
