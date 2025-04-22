@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import {
   Table,
@@ -7,7 +8,7 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { fetchAllUsers } from "@/tools/user";
+import { fetchAllUsers, updateUserById } from "@/tools/user";
 import { useEffect, useState } from "react";
 import {
   ColumnDef,
@@ -33,6 +34,17 @@ import {
   disableUserById,
 } from "@/tools/admin";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { fetchRoles } from "@/tools/role";
+import { Input } from "@/components/ui/input";
 
 export default function ManageUsers() {
   const [users, setUsers] = useState<
@@ -41,13 +53,17 @@ export default function ManageUsers() {
       profile: Database["public"]["Tables"]["profile"]["Row"];
     }[]
   >([]);
+  const [roles, setRoles] = useState<
+    Database["public"]["Tables"]["role"]["Row"][]
+  >([]);
   useEffect(() => {
-    const getUsers = async () => {
-      const data = await fetchAllUsers();
-      setUsers(data);
-      console.log(data);
+    const fetchData = async () => {
+      const users = await fetchAllUsers();
+      setUsers(users);
+      const roles = await fetchRoles();
+      setRoles(roles);
     };
-    getUsers();
+    fetchData();
   }, []);
 
   const handleDeleteUser = async (id: string) => {
@@ -75,24 +91,107 @@ export default function ManageUsers() {
       accessorKey: "profile.active",
       header: "Compte Actif",
       cell: ({ row }) => {
-        return <Checkbox checked={row.original.profile.active} />;
+        const [draft, setDraft] = useState(row.original.profile.active);
+
+        const handleChange = async () => {
+          await updateUserById(row.original.user.id, { active: !draft });
+          setDraft(!draft);
+        };
+
+        return <Checkbox checked={draft} onCheckedChange={handleChange} />;
       },
     },
     {
       accessorKey: "user.email",
       header: "Email",
+      cell: ({ row }) => {
+        return (
+          <Input
+            value={row.original.user.email}
+            className="min-w-40"
+            placeholder="Email"
+            disabled
+          />
+        );
+      },
     },
     {
       accessorKey: "profile.firstname",
       header: "Prénom",
+      cell: ({ row }) => {
+        const [draft, setDraft] = useState(row.original.profile.firstname);
+
+        const onBlur = async () => {
+          if (draft != row.original.profile.firstname) {
+            await updateUserById(row.original.user.id, { firstname: draft });
+          }
+        };
+
+        return (
+          <Input
+            value={draft}
+            onBlur={onBlur}
+            onChange={(e) => setDraft(e.target.value)}
+            className="min-w-40"
+            placeholder="Prénom"
+          />
+        );
+      },
     },
     {
       accessorKey: "profile.lastname",
       header: "Nom",
+      cell: ({ row }) => {
+        const [draft, setDraft] = useState(row.original.profile.lastname);
+
+        const onBlur = async () => {
+          if (draft != row.original.profile.lastname) {
+            await updateUserById(row.original.user.id, { lastname: draft });
+          }
+        };
+
+        return (
+          <Input
+            value={draft}
+            onBlur={onBlur}
+            onChange={(e) => setDraft(e.target.value)}
+            className="min-w-40"
+            placeholder="Nom"
+          />
+        );
+      },
     },
     {
       accessorKey: "profile.role.name",
       header: "Role",
+      cell: ({ row }) => {
+        const onRoleChange = async (roleId: string) => {
+          console.log(roleId);
+          await updateUserById(row.original.user.id, {
+            role: parseInt(roleId),
+          });
+        };
+
+        return (
+          <Select
+            defaultValue={row.original.profile.role?.toString()}
+            onValueChange={onRoleChange}
+          >
+            <SelectTrigger className="w-40">
+              <SelectValue placeholder="Choisissez un rôle" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {roles.map((role) => (
+                  <SelectItem value={role.id.toString()} key={role.id}>
+                    {role.name}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        );
+      },
     },
     {
       id: "actions",

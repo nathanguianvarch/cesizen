@@ -16,9 +16,7 @@ export const fetchAllUsers = async (): Promise<{
 
   const { data: profiles, error: profilesError } = await supabase
     .from("profile")
-    .select(`*, role (
-      name
-    )`)
+    .select(`*`)
   if (profilesError) {
     toast.error("Erreur récupération des profils : " + profilesError.message);
     return [];
@@ -74,17 +72,9 @@ export const getRoleName = async (roleId: number): Promise<string | null> => {
   return role?.name ?? null;
 };
 
-/**
- * Subscribe to authentication state changes and automatically fetch the current user and profile.
- * Calls the provided callback with { user, profile } or null when signed out.
- * @param callback - Function to receive the updated user data or null.
- * @returns Unsubscribe function to stop listening.
- */
 export const subscribeToCurrentUser = (callback: (current: { user: User; profile: Database["public"]["Tables"]["profile"]["Row"] } | null) => void) => {
-  // Fetch initial user state
   fetchCurrentUser().then(callback);
 
-  // Listen for auth state changes
   const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
     if (session?.user) {
       const updated = await fetchCurrentUser();
@@ -94,8 +84,26 @@ export const subscribeToCurrentUser = (callback: (current: { user: User; profile
     }
   });
 
-  // Return an unsubscribe function
   return () => {
     subscription.unsubscribe();
   };
 };
+
+export const updateUserById = async (id: string, data: {
+  active?: boolean;
+  created_at?: string;
+  firstname?: string;
+  id?: string;
+  lastname?: string;
+  role?: number | null;
+}) => {
+  const { error } = await supabase
+  .from('profile')
+  .update(data)
+  .eq('id', id)
+  if(error) {
+    toast.error(error.message)
+  } else {
+    toast.success("Utilisateur mis à jour.")
+  }
+}
