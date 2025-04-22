@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import {
   Table,
@@ -26,17 +27,32 @@ import {
 import { Button } from "@/components/ui/button";
 import { Clipboard, MoreHorizontal, Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { fetchInformations } from "@/tools/information";
+import { fetchInformations, updateInformationById } from "@/tools/information";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { fetchInformationCategories } from "@/tools/information_category";
 
 export default function ManageInformations() {
   const [informations, setInformations] = useState<
     Database["public"]["Tables"]["information"]["Row"][]
   >([]);
+  const [informationCategories, setInformationCategories] = useState<
+    Database["public"]["Tables"]["information_category"]["Row"][]
+  >([]);
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchInformations();
-      setInformations(data);
-      console.log(data);
+      const informations = await fetchInformations();
+      setInformations(informations);
+      const informationCategories = await fetchInformationCategories();
+      setInformationCategories(informationCategories);
     };
     fetchData();
   }, []);
@@ -57,18 +73,105 @@ export default function ManageInformations() {
     {
       accessorKey: "title",
       header: "Titre",
+      cell: ({ row }) => {
+        const [draft, setDraft] = useState(row.original.title!);
+
+        const onBlur = async () => {
+          if (draft != row.original.title) {
+            console.log(draft);
+            await updateInformationById(row.original.id, { title: draft });
+          }
+        };
+
+        return (
+          <Input
+            value={draft}
+            onBlur={onBlur}
+            onChange={(e) => setDraft(e.target.value)}
+            className="min-w-70"
+            placeholder="Titre"
+          />
+        );
+      },
     },
     {
       accessorKey: "content",
       header: "Contenu",
+      cell: ({ row }) => {
+        const [draft, setDraft] = useState(row.original.content!);
+
+        const onBlur = async () => {
+          if (draft != row.original.content) {
+            await updateInformationById(row.original.id, { content: draft });
+          }
+        };
+
+        return (
+          <Textarea
+            value={draft}
+            onBlur={onBlur}
+            onChange={(e) => setDraft(e.target.value)}
+            className="w-100"
+            placeholder="Contenu"
+          />
+        );
+      },
     },
     {
       accessorKey: "image",
       header: "Lien de l'image",
+      cell: ({ row }) => {
+        const [draft, setDraft] = useState(row.original.image!);
+
+        const onBlur = async () => {
+          if (draft != row.original.image) {
+            console.log(draft);
+            await updateInformationById(row.original.id, { image: draft });
+          }
+        };
+
+        return (
+          <Input
+            value={draft}
+            onBlur={onBlur}
+            onChange={(e) => setDraft(e.target.value)}
+            className="w-48"
+            placeholder="Lien image"
+          />
+        );
+      },
     },
     {
       accessorKey: "category",
       header: "Catégorie",
+      cell: ({ row }) => {
+        const onRoleChange = async (roleId: string) => {
+          console.log(roleId);
+          await updateInformationById(row.original.id, {
+            category: parseInt(roleId),
+          });
+        };
+
+        return (
+          <Select
+            defaultValue={row.original.category?.toString()}
+            onValueChange={onRoleChange}
+          >
+            <SelectTrigger className="w-70">
+              <SelectValue placeholder="Choisissez un rôle" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {informationCategories.map((category) => (
+                  <SelectItem value={category.id.toString()} key={category.id}>
+                    {category.title}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        );
+      },
     },
     {
       id: "actions",

@@ -93,7 +93,6 @@ export const updateUserById = async (id: string, data: {
   active?: boolean;
   created_at?: string;
   firstname?: string;
-  id?: string;
   lastname?: string;
   role?: number | null;
 }) => {

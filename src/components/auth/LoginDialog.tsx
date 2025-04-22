@@ -39,7 +39,7 @@ export default function LoginDialog({ onClose }: { onClose: () => void }) {
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex flex-row">
-            <Label>Password</Label>
+            <Label>Mot de passe</Label>
             <a
               href="#"
               className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
@@ -62,12 +62,6 @@ export default function LoginDialog({ onClose }: { onClose: () => void }) {
         >
           Se connecter
         </Button>
-      </div>
-      <div>
-        Vous n'avez pas de compte?{" "}
-        <Link href="/auth/register" className="underline underline-offset-4">
-          S'inscrire
-        </Link>
       </div>
     </div>
   );

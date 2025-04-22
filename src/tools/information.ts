@@ -6,7 +6,8 @@ export const fetchInformations = async (): Promise<Database["public"]["Tables"][
   try {
     const { data, error } = await supabase
       .from('information')
-      .select('*');
+      .select('*')
+      .order("created_at");
 
     if (error) {
       toast.error("Erreur lors de la récupération des informations");
@@ -37,3 +38,16 @@ export const fetchInformationCategories = async (): Promise<Database["public"]["
     return [];
   }
 };
+export const updateInformationById = async (id: number, data: { category?: number | null ; content?: string | null; image?: string | null ; title?: string | null ; url?: string | null; }) => {
+  const { data: informationData, error } = await supabase
+  .from('information')
+  .update(data)
+  .eq("id", id)
+
+  if(error) {
+    toast.error(error.message)
+  } else {
+    toast.success("Information mis à jour.")
+    console.log(informationData)
+  }
+}
