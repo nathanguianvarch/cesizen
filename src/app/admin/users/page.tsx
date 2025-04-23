@@ -27,12 +27,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Clipboard, MoreHorizontal, Power, Trash2 } from "lucide-react";
-import {
-  ActivateUserById,
-  deleteUserById,
-  disableUserById,
-} from "@/tools/admin";
+import { Clipboard, MoreHorizontal, Trash2 } from "lucide-react";
+import { deleteUserById } from "@/tools/admin";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
@@ -69,17 +65,6 @@ export default function ManageUsers() {
 
   const handleDeleteUser = async (id: string) => {
     await deleteUserById(id);
-    const data = await fetchAllUsers();
-    setUsers(data);
-  };
-
-  const handleDisableUser = async (id: string) => {
-    await disableUserById(id);
-    const data = await fetchAllUsers();
-    setUsers(data);
-  };
-  const handleActivateUser = async (id: string) => {
-    await ActivateUserById(id);
     const data = await fetchAllUsers();
     setUsers(data);
   };
@@ -233,24 +218,6 @@ export default function ManageUsers() {
                 Copier l&apos;ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              {user.profile.active ? (
-                <DropdownMenuItem
-                  variant="destructive"
-                  onClick={() => handleDisableUser(user.user.id)}
-                >
-                  <Power />
-                  Désactiver
-                </DropdownMenuItem>
-              ) : (
-                <DropdownMenuItem
-                  variant="destructive"
-                  onClick={() => handleActivateUser(user.user.id)}
-                >
-                  <Power />
-                  Activer
-                </DropdownMenuItem>
-              )}
-
               <DropdownMenuItem
                 variant="destructive"
                 onClick={() => handleDeleteUser(user.user.id)}

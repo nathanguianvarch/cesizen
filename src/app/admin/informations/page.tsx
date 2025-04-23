@@ -9,7 +9,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { fr } from "date-fns/locale";
-import { parseISO, format } from "date-fns";
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import {
   ColumnDef,
