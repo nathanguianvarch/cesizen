@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import {
   Table,
@@ -24,29 +25,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Clipboard, MoreHorizontal, Trash2 } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { fetchInformations } from "@/tools/information";
-import { fetchDiagnosticsEvents } from "@/tools/diagnoctic";
+import { Clipboard, LoaderCircle, MoreHorizontal, Trash2 } from "lucide-react";
+import {
+  deleteDiagnoticById,
+  fetchDiagnosticsEvents,
+  updateDiagnoticById,
+} from "@/tools/diagnoctic";
+import { Input } from "@/components/ui/input";
+import { AddDiagnoticsDialog } from "@/components/AddDiagnocticsDialog";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 export default function ManageInformations() {
   const [diagnosticsEvent, setDiagnocticsEvent] = useState<
     Database["public"]["Tables"]["diagnostic_event"]["Row"][]
   >([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchDiagnosticsEvents();
+      const data = await fetchDiagnosticsEvents().finally();
       setDiagnocticsEvent(data);
-      console.log(data);
+      setLoading(false);
     };
     fetchData();
   }, []);
-
-  // const handleDeleteUser = async (id: string) => {
-  //   await deleteUserById(id);
-  //   const data = await fetchAllUsers();
-  //   setInformations(data);
-  // };
 
   const columns: ColumnDef<
     Database["public"]["Tables"]["diagnostic_event"]["Row"]
@@ -55,14 +57,11 @@ export default function ManageInformations() {
       accessorKey: "created_at",
       header: "Créer le",
       cell: ({ row }) => {
-        const date = new Date(row.original.created_at);
         return (
           <>
-            {date.toDateString() +
-              " " +
-              date.getHours() +
-              ":" +
-              date.getMinutes()}
+            {format(row.original.created_at, "d MMMM yyyy 'à' HH'h'mm", {
+              locale: fr,
+            })}
           </>
         );
       },
@@ -70,10 +69,50 @@ export default function ManageInformations() {
     {
       accessorKey: "title",
       header: "Titre",
+      cell: ({ row }) => {
+        const [draft, setDraft] = useState(row.original.title!);
+
+        const onBlur = async () => {
+          if (draft != row.original.title) {
+            console.log(draft);
+            await updateDiagnoticById(row.original.id, { title: draft });
+          }
+        };
+
+        return (
+          <Input
+            value={draft}
+            onBlur={onBlur}
+            onChange={(e) => setDraft(e.target.value)}
+            className="min-w-70"
+            placeholder="Titre"
+          />
+        );
+      },
     },
     {
       accessorKey: "points",
       header: "Points",
+      cell: ({ row }) => {
+        const [draft, setDraft] = useState(row.original.points!);
+
+        const onBlur = async () => {
+          if (draft != row.original.points) {
+            console.log(draft);
+            await updateDiagnoticById(row.original.id, { points: draft });
+          }
+        };
+
+        return (
+          <Input
+            value={draft}
+            onBlur={onBlur}
+            onChange={(e) => setDraft(parseInt(e.target.value))}
+            maxLength={3}
+            placeholder="Points"
+          />
+        );
+      },
     },
     {
       id: "actions",
@@ -96,13 +135,13 @@ export default function ManageInformations() {
                 }
               >
                 <Clipboard />
-                Copier l'ID
+                Copier l&apos;ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
 
               <DropdownMenuItem
                 variant="destructive"
-                // onClick={() => handleDeleteUser(user.user.id)}
+                onClick={() => deleteDiagnoticById(row.original.id)}
               >
                 <Trash2 />
                 Supprimer
@@ -125,35 +164,49 @@ export default function ManageInformations() {
       <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
         Gestion des diagnoctics
       </h1>
-      <div className="border rounded-xl p-2">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              {table.getHeaderGroups()[0].headers.map((header) => (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
+      {loading ? (
+        <div className="flex flex-row gap-2">
+          <LoaderCircle className="animate-spin" />
+          Chargement des données
+        </div>
+      ) : (
+        <>
+          <div className="border rounded-xl">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  {table.getHeaderGroups()[0].headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
                 ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+              </TableBody>
+            </Table>
+          </div>
+
+          <AddDiagnoticsDialog />
+        </>
+      )}
     </div>
   );
 }

@@ -8,6 +8,8 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
+import { fr } from "date-fns/locale";
+import { parseISO, format } from "date-fns";
 import { useEffect, useState } from "react";
 import {
   ColumnDef,
@@ -26,8 +28,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Clipboard, MoreHorizontal, Trash2 } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { fetchInformations, updateInformationById } from "@/tools/information";
+import {
+  deleteInformationById,
+  fetchInformations,
+  updateInformationById,
+} from "@/tools/information";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -39,6 +44,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { fetchInformationCategories } from "@/tools/information_category";
+import { AddInformationsDialog } from "@/components/AddInformationsDialog";
 
 export default function ManageInformations() {
   const [informations, setInformations] = useState<
@@ -57,18 +63,21 @@ export default function ManageInformations() {
     fetchData();
   }, []);
 
-  // const handleDeleteUser = async (id: string) => {
-  //   await deleteUserById(id);
-  //   const data = await fetchAllUsers();
-  //   setInformations(data);
-  // };
-
   const columns: ColumnDef<
     Database["public"]["Tables"]["information"]["Row"]
   >[] = [
     {
       accessorKey: "created_at",
       header: "Créer le",
+      cell: ({ row }) => {
+        return (
+          <>
+            {format(row.original.created_at, "d MMMM yyyy 'à' HH'h'mm", {
+              locale: fr,
+            })}
+          </>
+        );
+      },
     },
     {
       accessorKey: "title",
@@ -194,13 +203,15 @@ export default function ManageInformations() {
                 }
               >
                 <Clipboard />
-                Copier l'ID
+                Copier l&apos;ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
 
               <DropdownMenuItem
                 variant="destructive"
-                // onClick={() => handleDeleteUser(user.user.id)}
+                onClick={async () =>
+                  await deleteInformationById(row.original.id)
+                }
               >
                 <Trash2 />
                 Supprimer
@@ -252,6 +263,7 @@ export default function ManageInformations() {
           </TableBody>
         </Table>
       </div>
+      <AddInformationsDialog />
     </div>
   );
 }

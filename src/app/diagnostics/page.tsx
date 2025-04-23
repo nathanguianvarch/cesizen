@@ -32,13 +32,13 @@ export default function DiagnosticsPage() {
     getDiagnosticsEvents();
   });
 
-  const totalPoints = selectedEvents.reduce((sum, eventId) => {
+  const totalPoints = selectedEvents.reduce<number>((sum, eventId) => {
     const event = diagnocticsEvents.find((e) => e.id === eventId);
-    return sum + (event ? event.points : 0);
+    return sum + (event?.points ? event.points : 0);
   }, 0);
 
   const handleEventToggle = (eventId: number) => {
-    setSelectedEvents((prev: number) =>
+    setSelectedEvents((prev: number[]) =>
       prev.includes(eventId)
         ? prev.filter((id) => id !== eventId)
         : [...prev, eventId]

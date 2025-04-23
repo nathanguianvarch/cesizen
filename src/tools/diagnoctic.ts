@@ -20,3 +20,44 @@ export const fetchDiagnosticsEvents = async (): Promise<Database["public"]["Tabl
     return [];
   }
 };
+
+export const addDiagnotic = async (title: string | null, points: number | null) => {
+  const { data, error } = await supabase
+  .from('diagnostic_event')
+  .insert([ {title, points} ])
+  .select()
+
+  console.log(data)
+
+  if(error) {
+    toast.error(error.message)
+  } else {
+    toast.success("Diagnostic ajouté.")
+  }
+}
+
+export const updateDiagnoticById = async (id: number, data: {title?: string | null ; points?: number | null; }) => {
+  const { error } = await supabase
+  .from('diagnostic_event')
+  .update(data)
+  .eq("id", id)
+
+  if(error) {
+    toast.error(error.message)
+  } else {
+    toast.success("Diagnostic mis à jour.")
+  }
+}
+
+export const deleteDiagnoticById = async (id: number) => {
+  const { error } = await supabase
+  .from('diagnostic_event')
+  .delete()
+  .eq("id", id)
+
+  if(error) {
+    toast.error(error.message)
+  } else {
+    toast.success("Diagnostic supprimé.")
+  }
+}

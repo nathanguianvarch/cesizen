@@ -1,8 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
-import { Database } from "../../database.types";
+import type { Database } from "../../database.types";
 
-// Create a single supabase client for interacting with your database
-export const supabase = createClient<Database>(
-  "https://ocavikrvvvoiryilrvnk.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jYXZpa3J2dnZvaXJ5aWxydm5rIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0MzcwMDI3OCwiZXhwIjoyMDU5Mjc2Mjc4fQ.GCOsSTD0v9dvUquFejxk3SFzdaB3Dih2bzmYJ9rkjN8"
-);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error('Missing Supabase environment variables');
+}
+
+export const supabase = createClient<Database>(supabaseUrl, supabaseKey);

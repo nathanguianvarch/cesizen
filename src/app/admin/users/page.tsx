@@ -39,12 +39,13 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { fetchRoles } from "@/tools/role";
 import { Input } from "@/components/ui/input";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 export default function ManageUsers() {
   const [users, setUsers] = useState<
@@ -87,6 +88,23 @@ export default function ManageUsers() {
     user: User;
     profile: Database["public"]["Tables"]["profile"]["Row"];
   }>[] = [
+    {
+      accessorKey: "profile.created_at",
+      header: "Créer le",
+      cell: ({ row }) => {
+        return (
+          <>
+            {format(
+              row.original.profile.created_at,
+              "d MMMM yyyy 'à' HH'h'mm",
+              {
+                locale: fr,
+              }
+            )}
+          </>
+        );
+      },
+    },
     {
       accessorKey: "profile.active",
       header: "Compte Actif",

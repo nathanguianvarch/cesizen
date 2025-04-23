@@ -20,6 +20,7 @@ import {
 import { User } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 import { Database } from "../../../database.types";
+import { AccountDialog } from "../AccountDialog";
 
 type NavUserProps = {
   user: {
@@ -72,10 +73,7 @@ export function NavUser({ user, logout }: NavUserProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => redirect("/account")}>
-                <UserIcon />
-                Mon compte
-              </DropdownMenuItem>
+              <AccountDialog />
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => logout()}>
