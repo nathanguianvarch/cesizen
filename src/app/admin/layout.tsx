@@ -1,5 +1,5 @@
 "use client";
-import { fetchCurrentUser } from "@/tools/user";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -9,16 +9,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const router = useRouter();
+  const { auth, loading } = useAuth();
 
   useEffect(() => {
-    const verifyIsAdmin = async () => {
-      const user = await fetchCurrentUser();
-      if (user?.profile.role != 1) {
+    if (!loading) {
+      if (!auth || auth.profile.role !== 1) {
         router.push("/");
       }
-    };
-    verifyIsAdmin();
-  }, [router]);
+    }
+  }, [auth, loading, router]);
 
   return <div>{children}</div>;
 }

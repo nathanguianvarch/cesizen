@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { SidebarTrigger } from "./ui/sidebar";
 
 export function HeroSection() {
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-teal-50 to-white dark:from-slate-900 dark:to-slate-950">
-      <SidebarTrigger />
       <div className="container px-4 md:px-6 mx-auto flex flex-col items-center text-center space-y-8">
         <div className="space-y-4">
           <div className="flex flex-col">

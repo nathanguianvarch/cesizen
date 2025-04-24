@@ -58,12 +58,9 @@ export default function DiagnosticsPage() {
 
   return (
     <div className="m-4 flex flex-col gap-6 items-center">
-      <div className="flex flex-row gap-4 items-center">
-        <SidebarTrigger size="lg" />
-        <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-          Diagnostic de stress
-        </h1>
-      </div>
+      <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+        Diagnostic de stress
+      </h1>
       <div className="w-100 lg:w-150">
         {!showResults ? (
           <Card>
