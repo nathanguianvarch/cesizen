@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import { Toaster } from "sonner";
 
@@ -20,6 +20,10 @@ export default function RootLayout({
         <SidebarProvider>
           <AppSidebar />
           <main className="w-full">
+            <div className="border-b h-15 w-full flex items-center block md:hidden">
+              <SidebarTrigger size="lg" />
+              <h1 className="text-center">CESIZen</h1>
+            </div>
             <Toaster richColors />
             {children}
           </main>

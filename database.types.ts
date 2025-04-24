@@ -128,6 +128,30 @@ export type Database = {
           },
         ]
       }
+      respiration: {
+        Row: {
+          apnea: number
+          created_at: string
+          expiration: number
+          id: number
+          inspiration: number
+        }
+        Insert: {
+          apnea: number
+          created_at?: string
+          expiration: number
+          id?: number
+          inspiration: number
+        }
+        Update: {
+          apnea?: number
+          created_at?: string
+          expiration?: number
+          id?: number
+          inspiration?: number
+        }
+        Relationships: []
+      }
       role: {
         Row: {
           created_at: string
