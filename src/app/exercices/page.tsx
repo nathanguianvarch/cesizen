@@ -114,7 +114,7 @@ export default function RespirationPage() {
     }
   };
 
-  const handleCustomSettingChange = (setting, value) => {
+  const handleCustomSettingChange = (setting: string, value: number[]) => {
     setCustomSettings({
       ...customSettings,
       [setting]: value[0],
