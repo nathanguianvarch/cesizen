@@ -1,4 +1,3 @@
-import { UserCog } from "lucide-react";
 import Link from "next/link";
 import { SidebarGroup, SidebarMenu, SidebarMenuItem } from "../ui/sidebar";
 import { DynamicIcon, IconName } from "lucide-react/dynamic";

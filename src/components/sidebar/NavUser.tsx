@@ -1,6 +1,6 @@
 "use client";
 
-import { EllipsisVertical, LogOut, User as UserIcon } from "lucide-react";
+import { EllipsisVertical, LogOut } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -18,7 +18,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { User } from "@supabase/supabase-js";
-import { redirect } from "next/navigation";
 import { Database } from "../../../database.types";
 import { AccountDialog } from "../AccountDialog";
 

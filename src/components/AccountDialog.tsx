@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,7 +9,6 @@ import {
 import { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { addDiagnotic } from "@/tools/diagnoctic";
 import { fetchCurrentUser, updateUserById } from "@/tools/user";
 import { DropdownMenuItem } from "./ui/dropdown-menu";
 import { UserIcon } from "lucide-react";

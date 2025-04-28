@@ -1,10 +1,8 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login, verifyEmailSyntax } from "@/tools/auth";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 export default function LoginDialog({ onClose }: { onClose: () => void }) {
   const [email, setEmail] = useState("");
