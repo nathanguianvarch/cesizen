@@ -12,6 +12,7 @@ import { Label } from "./ui/label";
 import { fetchCurrentUser, updateUserById } from "@/tools/user";
 import { DropdownMenuItem } from "./ui/dropdown-menu";
 import { UserIcon } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export function AccountDialog() {
   const [open, setOpen] = useState(false);
@@ -87,6 +88,14 @@ export function AccountDialog() {
                 onChange={(e) => setFirstname(e.target.value)}
               />
             </div>
+            <Button
+              onClick={async () => {
+                await supabase;
+                console.log("ok");
+              }}
+            >
+              aaa
+            </Button>
             <Button
               type="submit"
               onClick={async () => {
