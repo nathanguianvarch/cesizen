@@ -14,8 +14,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Play, Pause, Settings } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { Play, Pause, Settings, LoaderCircle } from "lucide-react";
+import { fetchRespirations } from "@/tools/respiration";
+import { toast } from "sonner";
 
 interface Respiration {
   id: number;
@@ -35,18 +36,24 @@ export default function RespirationPage() {
     expiration: 8,
   });
   const [respirations, setRespirations] = useState<Respiration[]>([]);
-
-  const fetchRespirations = async () => {
-    const { data, error } = await supabase.from("respiration").select("*");
-    if (error) {
-      console.error("Error fetching respirations:", error);
-    } else {
-      setRespirations(data ?? []);
-    }
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchRespirations();
+    const fetchData = async () => {
+      try {
+        const data = await fetchRespirations();
+        setRespirations(data);
+      } catch (e) {
+        if (e instanceof Error) {
+          toast.error(e.message);
+        } else {
+          toast.error("Une erreur est survenue");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   const presets = respirations.reduce((acc, ex) => {
@@ -153,6 +160,15 @@ export default function RespirationPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex flex-row gap-2 p-4">
+        <LoaderCircle className="animate-spin" />
+        Chargement des données
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1 py-12">
@@ -252,7 +268,7 @@ export default function RespirationPage() {
               <TabsContent value="settings" className="mt-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Paramètres de l'exercice</CardTitle>
+                    <CardTitle>Paramètres de l&apos;exercice</CardTitle>
                     <CardDescription>
                       Choisissez un préréglage ou personnalisez votre exercice
                       de respiration
@@ -299,7 +315,7 @@ export default function RespirationPage() {
                         <div className="space-y-6">
                           <div className="space-y-2">
                             <Label htmlFor="inspiration">
-                              Durée d'inspiration (secondes):{" "}
+                              Durée d&apos;inspiration (secondes):{" "}
                               {customSettings.inspiration}
                             </Label>
                             <Slider
@@ -315,7 +331,8 @@ export default function RespirationPage() {
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="apnee">
-                              Durée d'apnée (secondes): {customSettings.apnee}
+                              Durée d&apos;apnée (secondes):{" "}
+                              {customSettings.apnee}
                             </Label>
                             <Slider
                               id="apnee"
@@ -330,7 +347,7 @@ export default function RespirationPage() {
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="expiration">
-                              Durée d'expiration (secondes):{" "}
+                              Durée d&apos;expiration (secondes):{" "}
                               {customSettings.expiration}
                             </Label>
                             <Slider
@@ -351,13 +368,13 @@ export default function RespirationPage() {
                   <CardFooter>
                     <Button
                       className="w-full"
-                      onClick={() => {
-                        document
-                          .querySelector('[data-value="exercise"]')
-                          .click();
-                      }}
+                      // onClick={() => {
+                      //   document
+                      //     .querySelector('[data-value="exercise"]')
+                      //     .click();
+                      // }}
                     >
-                      Appliquer et commencer l'exercice
+                      Appliquer et commencer l&apos;exercice
                     </Button>
                   </CardFooter>
                 </Card>

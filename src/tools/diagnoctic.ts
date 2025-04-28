@@ -22,12 +22,10 @@ export const fetchDiagnosticsEvents = async (): Promise<Database["public"]["Tabl
 };
 
 export const addDiagnotic = async (title: string | null, points: number | null) => {
-  const { data, error } = await supabase
+  const { error } = await supabase
   .from('diagnostic_event')
   .insert([ {title, points} ])
   .select()
-
-  console.log(data)
 
   if(error) {
     toast.error(error.message)

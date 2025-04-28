@@ -45,6 +45,7 @@ import {
 } from "@/components/ui/select";
 import { fetchInformationCategories } from "@/tools/information_category";
 import { AddInformationsDialog } from "@/components/AddInformationsDialog";
+import { toast } from "sonner";
 
 type InfoRow = Database["public"]["Tables"]["information"]["Row"];
 
@@ -95,16 +96,17 @@ export default function ManageInformations() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
       try {
-        const [infos, cats] = await Promise.all([
-          fetchInformations(),
-          fetchInformationCategories(),
-        ]);
+        const infos = await fetchInformations();
         setInformations(infos);
-        setInformationCategories(cats);
-      } catch (error) {
-        console.error("Erreur de chargement :", error);
+        const categories = await fetchInformationCategories();
+        setInformationCategories(categories);
+      } catch (e) {
+        if (e instanceof Error) {
+          toast.error(e.message);
+        } else {
+          toast.error("Une erreur est survenue");
+        }
       } finally {
         setLoading(false);
       }
@@ -228,6 +230,15 @@ export default function ManageInformations() {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (loading) {
+    return (
+      <div className="flex flex-row gap-2 p-4">
+        <LoaderCircle className="animate-spin" />
+        Chargement des données
+      </div>
+    );
+  }
 
   return (
     <div className="m-4 flex flex-col gap-4">

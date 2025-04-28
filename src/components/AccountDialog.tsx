@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -56,6 +57,7 @@ export function AccountDialog() {
       </DialogTrigger>
       <DialogContent className="w-[350px]">
         <DialogTitle>Modifier son compte</DialogTitle>
+        <DialogDescription></DialogDescription>
         <div className="flex flex-col gap-6 items-center">
           <div className="flex flex-col gap-4 w-full">
             <div className="flex flex-col gap-2">
@@ -90,7 +92,6 @@ export function AccountDialog() {
             <Button
               type="submit"
               onClick={async () => {
-                console.log(userId);
                 await updateUserById(userId, { firstname, lastname });
                 handleClose();
               }}

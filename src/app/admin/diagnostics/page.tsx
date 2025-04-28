@@ -35,17 +35,27 @@ import { Input } from "@/components/ui/input";
 import { AddDiagnoticsDialog } from "@/components/AddDiagnocticsDialog";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { toast } from "sonner";
 
 export default function ManageInformations() {
-  const [diagnosticsEvent, setDiagnocticsEvent] = useState<
+  const [diagnosticsEvent, setDiagnosticsEvent] = useState<
     Database["public"]["Tables"]["diagnostic_event"]["Row"][]
   >([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchDiagnosticsEvents().finally();
-      setDiagnocticsEvent(data);
-      setLoading(false);
+      try {
+        const data = await fetchDiagnosticsEvents();
+        setDiagnosticsEvent(data);
+      } catch (e) {
+        if (e instanceof Error) {
+          toast.error(e.message);
+        } else {
+          toast.error("Une erreur est survenue");
+        }
+      } finally {
+        setLoading(false);
+      }
     };
     fetchData();
   }, []);
@@ -74,7 +84,6 @@ export default function ManageInformations() {
 
         const onBlur = async () => {
           if (draft != row.original.title) {
-            console.log(draft);
             await updateDiagnoticById(row.original.id, { title: draft });
           }
         };
@@ -98,7 +107,6 @@ export default function ManageInformations() {
 
         const onBlur = async () => {
           if (draft != row.original.points) {
-            console.log(draft);
             await updateDiagnoticById(row.original.id, { points: draft });
           }
         };
@@ -159,54 +167,51 @@ export default function ManageInformations() {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  if (loading) {
+    return (
+      <div className="flex flex-row gap-2 p-4">
+        <LoaderCircle className="animate-spin" />
+        Chargement des données
+      </div>
+    );
+  }
+
   return (
     <div className="m-4 flex flex-col gap-4">
       <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
         Gestion des diagnoctics
       </h1>
-      {loading ? (
-        <div className="flex flex-row gap-2">
-          <LoaderCircle className="animate-spin" />
-          Chargement des données
-        </div>
-      ) : (
-        <>
-          <div className="border rounded-xl">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  {table.getHeaderGroups()[0].headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
+      <div className="border rounded-xl">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {table.getHeaderGroups()[0].headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
                 ))}
-              </TableBody>
-            </Table>
-          </div>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
-          <AddDiagnoticsDialog />
-        </>
-      )}
+      <AddDiagnoticsDialog />
     </div>
   );
 }

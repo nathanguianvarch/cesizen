@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -28,6 +29,7 @@ export function AuthDialog() {
       </DialogTrigger>
       <DialogTitle></DialogTitle>
       <DialogContent className="w-[350px]">
+        <DialogDescription></DialogDescription>
         <Tabs defaultValue="login" className="flex gap-6">
           <div className="flex justify-center">
             <TabsList>

@@ -27,7 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Clipboard, MoreHorizontal, Trash2 } from "lucide-react";
+import { Clipboard, LoaderCircle, MoreHorizontal, Trash2 } from "lucide-react";
 import { deleteUserById } from "@/tools/admin";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -42,6 +42,7 @@ import { fetchRoles } from "@/tools/role";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { toast } from "sonner";
 
 export default function ManageUsers() {
   const [users, setUsers] = useState<
@@ -53,12 +54,23 @@ export default function ManageUsers() {
   const [roles, setRoles] = useState<
     Database["public"]["Tables"]["role"]["Row"][]
   >([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
-      const users = await fetchAllUsers();
-      setUsers(users);
-      const roles = await fetchRoles();
-      setRoles(roles);
+      try {
+        const users = await fetchAllUsers();
+        setUsers(users);
+        const roles = await fetchRoles();
+        setRoles(roles);
+      } catch (e) {
+        if (e instanceof Error) {
+          toast.error(e.message);
+        } else {
+          toast.error("Une erreur est survenue");
+        }
+      } finally {
+        setLoading(false);
+      }
     };
     fetchData();
   }, []);
@@ -169,7 +181,6 @@ export default function ManageUsers() {
       header: "Role",
       cell: ({ row }) => {
         const onRoleChange = async (roleId: string) => {
-          console.log(roleId);
           await updateUserById(row.original.user.id, {
             role: parseInt(roleId),
           });
@@ -237,6 +248,15 @@ export default function ManageUsers() {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (loading) {
+    return (
+      <div className="flex flex-row gap-2 p-4">
+        <LoaderCircle className="animate-spin" />
+        Chargement des données
+      </div>
+    );
+  }
 
   return (
     <div className="m-4 flex flex-col gap-4">

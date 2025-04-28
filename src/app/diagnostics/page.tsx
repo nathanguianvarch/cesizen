@@ -12,10 +12,10 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
-import { Brain } from "lucide-react";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Brain, LoaderCircle } from "lucide-react";
 import { fetchDiagnosticsEvents } from "@/tools/diagnoctic";
 import { Database } from "../../../database.types";
+import { toast } from "sonner";
 
 export default function DiagnosticsPage() {
   const [selectedEvents, setSelectedEvents] = useState<number[]>([]);
@@ -23,14 +23,25 @@ export default function DiagnosticsPage() {
     Database["public"]["Tables"]["diagnostic_event"]["Row"][]
   >([]);
   const [showResults, setShowResults] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getDiagnosticsEvents = async () => {
-      const data = await fetchDiagnosticsEvents();
-      setDiagnocticsEvents(data);
+    const fetchData = async () => {
+      try {
+        const data = await fetchDiagnosticsEvents();
+        setDiagnocticsEvents(data);
+      } catch (e) {
+        if (e instanceof Error) {
+          toast.error(e.message);
+        } else {
+          toast.error("Une erreur est survenue");
+        }
+      } finally {
+        setLoading(false);
+      }
     };
-    getDiagnosticsEvents();
-  });
+    fetchData();
+  }, []);
 
   const totalPoints = selectedEvents.reduce<number>((sum, eventId) => {
     const event = diagnocticsEvents.find((e) => e.id === eventId);
@@ -55,6 +66,15 @@ export default function DiagnosticsPage() {
     setSelectedEvents([]);
     setShowResults(false);
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-row gap-2 p-4">
+        <LoaderCircle className="animate-spin" />
+        Chargement des données
+      </div>
+    );
+  }
 
   return (
     <div className="m-4 flex flex-col gap-6 items-center">

@@ -14,6 +14,7 @@ import { IconName } from "lucide-react/dynamic";
 import { AuthDialog } from "../auth/AuthDialog";
 import { logout } from "@/tools/auth";
 import { useAuth } from "@/context/AuthContext";
+import { LoaderCircle } from "lucide-react";
 
 const data: {
   title: string;
@@ -29,7 +30,7 @@ const data: {
 ];
 
 export function AppSidebar() {
-  const { auth } = useAuth();
+  const { auth, loading } = useAuth();
 
   return (
     <Sidebar>
@@ -41,7 +42,16 @@ export function AppSidebar() {
         {auth && auth.profile.role === 1 ? <NavAdmin /> : ""}
       </SidebarContent>
       <SidebarFooter>
-        {auth ? <NavUser user={auth} logout={logout} /> : <AuthDialog />}
+        {loading ? (
+          <div className="m-2 flex flex-row gap-2 justify-center">
+            <LoaderCircle className="animate-spin" />
+            <p>Chargement</p>
+          </div>
+        ) : auth ? (
+          <NavUser user={auth} logout={logout} />
+        ) : (
+          <AuthDialog />
+        )}
       </SidebarFooter>
     </Sidebar>
   );
