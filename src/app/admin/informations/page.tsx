@@ -114,6 +114,18 @@ export default function ManageInformations() {
     fetchData();
   }, []);
 
+  const handleDeleteInformation = async (id: number) => {
+    if (await deleteInformationById(id)) {
+      setInformations((prev) => prev.filter((i) => i.id !== id));
+    }
+  };
+
+  const onAddInformationSuccess = async (
+    newInformation: Database["public"]["Tables"]["information"]["Row"]
+  ) => {
+    setInformations((prev) => [...prev, newInformation]);
+  };
+
   const columns: ColumnDef<InfoRow>[] = [
     {
       accessorKey: "created_at",
@@ -209,13 +221,7 @@ export default function ManageInformations() {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               variant="destructive"
-              onClick={async () => {
-                await deleteInformationById(row.original.id);
-                // rafraîchir la liste après suppression
-                setInformations((prev) =>
-                  prev.filter((i) => i.id !== row.original.id)
-                );
-              }}
+              onClick={() => handleDeleteInformation(row.original.id)}
             >
               <Trash2 /> Supprimer
             </DropdownMenuItem>
@@ -245,48 +251,36 @@ export default function ManageInformations() {
       <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
         Gestion des informations
       </h1>
-
-      {loading ? (
-        <div className="flex items-center gap-2">
-          <LoaderCircle className="animate-spin" /> Chargement des données…
-        </div>
-      ) : (
-        <>
-          <div className="border rounded-xl p-2">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  {table.getHeaderGroups()[0].headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
+      <div className="border rounded-xl p-2">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {table.getHeaderGroups()[0].headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
                 ))}
-              </TableBody>
-            </Table>
-          </div>
-          <AddInformationsDialog />
-        </>
-      )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+      <AddInformationsDialog onSuccess={onAddInformationSuccess} />
     </div>
   );
 }
