@@ -9,9 +9,15 @@ import {
 import { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { fetchCurrentUser, updateUserById } from "@/tools/user";
+import {
+  changePasswordByEmail,
+  fetchCurrentUser,
+  updateUserById,
+} from "@/tools/user";
 import { DropdownMenuItem } from "./ui/dropdown-menu";
 import { UserIcon } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { verifyPasswordMatch } from "@/tools/auth";
 
 export function AccountDialog() {
   const [open, setOpen] = useState(false);
@@ -19,6 +25,10 @@ export function AccountDialog() {
   const [email, setEmail] = useState("");
   const [lastname, setLastname] = useState("");
   const [firstname, setFirstname] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,6 +48,24 @@ export function AccountDialog() {
   };
   const handleOpen = (): void => {
     setOpen(true);
+  };
+
+  useEffect(() => {
+    setPasswordError(verifyPasswordMatch(password, confirmPassword));
+    setConfirmPasswordError(verifyPasswordMatch(password, confirmPassword));
+  }, [password, confirmPassword]);
+
+  const handleChange = async () => {
+    await updateUserById(userId, { firstname, lastname });
+    if (
+      password &&
+      confirmPassword &&
+      !passwordError &&
+      !confirmPasswordError
+    ) {
+      await changePasswordByEmail(email, password);
+    }
+    handleClose();
   };
 
   return (
@@ -87,13 +115,55 @@ export function AccountDialog() {
                 onChange={(e) => setFirstname(e.target.value)}
               />
             </div>
-            <Button
-              type="submit"
-              onClick={async () => {
-                await updateUserById(userId, { firstname, lastname });
-                handleClose();
-              }}
-            >
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="confirmPassword">Nouveau mot de passe</Label>
+              </div>
+              <Input
+                id="password"
+                type="password"
+                required
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+                value={password}
+              />
+              {passwordError ? (
+                <div>
+                  <Label className="text-red-600 text-xs">
+                    {passwordError}
+                  </Label>
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="confirmPassword">
+                  Confirmer le nouveau mot de passe
+                </Label>
+              </div>
+              <Input
+                id="confirmPassword"
+                type="password"
+                required
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                }}
+                value={confirmPassword}
+              />
+              {confirmPasswordError ? (
+                <div>
+                  <Label className="text-red-600 text-xs">
+                    {confirmPasswordError}
+                  </Label>
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
+            <Button type="submit" onClick={handleChange}>
               Sauvegarder
             </Button>
           </div>

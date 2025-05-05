@@ -106,3 +106,22 @@ export const updateUserById = async (id: string, data: {
     toast.success("Utilisateur mis à jour.")
   }
 }
+
+export const changePasswordByEmail = async (email: string, newPassword: string) => {
+  const { data: allUsers, error } = await supabase.auth.admin.listUsers();
+  if(error) {
+    toast.error(error.message)
+    return null
+  }
+  const user = allUsers.users.find((u) => u.email === email);
+  if(user) {
+    const { error: errorChangePassword } = await supabase.auth.admin.updateUserById(user.id, {
+      password: newPassword
+    });
+    if(errorChangePassword) {
+      toast.error(errorChangePassword.message)
+    } else {
+      toast.success("Utilisateur mis à jour.")
+    }
+  }
+}

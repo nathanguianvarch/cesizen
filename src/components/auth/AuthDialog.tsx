@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoginDialog from "./LoginDialog";
 import RegisterPage from "./RegisterDialog";
 import { useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 export function AuthDialog() {
   const [open, setOpen] = useState(false);

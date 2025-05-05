@@ -21,7 +21,17 @@ import {
 } from "./ui/select";
 import { addInformation } from "@/tools/information";
 
-export function AddInformationsDialog() {
+interface AddInformationsDialogProps {
+  onSuccess?: (
+    newInfo: Database["public"]["Tables"]["information"]["Row"]
+  ) => void;
+  onError?: (error: unknown) => void;
+}
+
+export function AddInformationsDialog({
+  onSuccess,
+  onError,
+}: AddInformationsDialogProps) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -44,6 +54,19 @@ export function AddInformationsDialog() {
     };
     fetchData();
   }, []);
+
+  const handleAddInformation = async () => {
+    const addedInfo = await addInformation(
+      title,
+      content,
+      image,
+      parseInt(category)
+    );
+    if (addedInfo) {
+      onSuccess?.(addedInfo);
+    }
+    handleClose();
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -106,13 +129,7 @@ export function AddInformationsDialog() {
                 </SelectContent>
               </Select>
             </div>
-            <Button
-              type="submit"
-              onClick={async () => {
-                await addInformation(title, content, image, parseInt(category));
-                handleClose();
-              }}
-            >
+            <Button type="submit" onClick={handleAddInformation}>
               Créer
             </Button>
           </div>

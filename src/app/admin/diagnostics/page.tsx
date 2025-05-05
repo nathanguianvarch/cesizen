@@ -32,7 +32,7 @@ import {
   updateDiagnoticById,
 } from "@/tools/diagnoctic";
 import { Input } from "@/components/ui/input";
-import { AddDiagnoticsDialog } from "@/components/AddDiagnocticsDialog";
+import { AddDiagnosticsDialog } from "@/components/AddDiagnocticsDialog";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { toast } from "sonner";
@@ -59,6 +59,12 @@ export default function ManageInformations() {
     };
     fetchData();
   }, []);
+
+  const onAddDiagnosticSuccess = async (
+    newInformation: Database["public"]["Tables"]["diagnostic_event"]["Row"]
+  ) => {
+    setDiagnosticsEvent((prev) => [...prev, newInformation]);
+  };
 
   const columns: ColumnDef<
     Database["public"]["Tables"]["diagnostic_event"]["Row"]
@@ -211,7 +217,7 @@ export default function ManageInformations() {
         </Table>
       </div>
 
-      <AddDiagnoticsDialog />
+      <AddDiagnosticsDialog onSuccess={onAddDiagnosticSuccess} />
     </div>
   );
 }

@@ -8,9 +8,19 @@ import {
 import { useState } from "react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { addDiagnotic } from "@/tools/diagnoctic";
+import { addDiagnostic } from "@/tools/diagnoctic";
+import { Database } from "../../database.types";
+interface AddInformationsDialogProps {
+  onSuccess?: (
+    newInfo: Database["public"]["Tables"]["diagnostic_event"]["Row"]
+  ) => void;
+  onError?: (error: unknown) => void;
+}
 
-export function AddDiagnoticsDialog() {
+export function AddDiagnosticsDialog({
+  onSuccess,
+  onError,
+}: AddInformationsDialogProps) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [points, setPoints] = useState(0);
@@ -20,6 +30,14 @@ export function AddDiagnoticsDialog() {
   };
   const handleOpen = (): void => {
     setOpen(true);
+  };
+
+  const handleAddDiagnostics = async () => {
+    const addedDiag = await addDiagnostic(title, points);
+    if (addedDiag) {
+      onSuccess?.(addedDiag);
+    }
+    handleClose();
   };
 
   return (
@@ -51,13 +69,7 @@ export function AddDiagnoticsDialog() {
                 onChange={(e) => setPoints(parseInt(e.target.value))}
               />
             </div>
-            <Button
-              type="submit"
-              onClick={async () => {
-                await addDiagnotic(title, points);
-                handleClose();
-              }}
-            >
+            <Button type="submit" onClick={handleAddDiagnostics}>
               Créer
             </Button>
           </div>

@@ -6,7 +6,7 @@ export const fetchInformations = async (): Promise<Database["public"]["Tables"][
   try {
     const { data, error } = await supabase
       .from('information')
-      .select('*')
+      .select('id, created_at, title, content, url, image, category')
       .order("created_at");
 
     if (error) {
@@ -39,16 +39,25 @@ export const fetchInformationCategories = async (): Promise<Database["public"]["
   }
 };
 
-export const addInformation = async (title: string | null, content: string | null, image: string | null, category: number | null) => {
-  const { error } = await supabase
-  .from('information')
-  .insert([ {title, content, image, category } ])
+export const addInformation = async (
+  title: string | null,
+  content: string | null,
+  image: string | null,
+  category: number | null
+): Promise<Database["public"]["Tables"]["information"]["Row"] | null> => {
+  const { data, error } = await supabase
+    .from("information")
+    .insert([{ title, content, image, category }])
+    .select()
+    .single()
 
-  if(error) {
-    toast.error(error.message)
-  } else {
-    toast.success("Information ajouté.")
+  if (error) {
+    toast.error(error.message);
+    return null;
   }
+
+  toast.success("Information ajoutée.");
+  return data ?? null;
 }
 
 export const updateInformationById = async (id: number, data: { category?: number | null ; content?: string | null; image?: string | null ; title?: string | null ; url?: string | null; }) => {
@@ -64,7 +73,7 @@ export const updateInformationById = async (id: number, data: { category?: numbe
   }
 }
 
-export const deleteInformationById = async (id: number) => {
+export const deleteInformationById = async (id: number): Promise<boolean> => {
   const { error } = await supabase
   .from('information')
   .delete()
@@ -74,5 +83,7 @@ export const deleteInformationById = async (id: number) => {
     toast.error(error.message)
   } else {
     toast.success("Information supprimé.")
+    return true
   }
+  return false
 }

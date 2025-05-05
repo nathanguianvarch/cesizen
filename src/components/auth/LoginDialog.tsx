@@ -38,12 +38,6 @@ export default function LoginDialog({ onClose }: { onClose: () => void }) {
         <div className="flex flex-col gap-2">
           <div className="flex flex-row">
             <Label>Mot de passe</Label>
-            <a
-              href="#"
-              className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-            >
-              Mot de passe oublié?
-            </a>
           </div>
           <Input
             type="password"
