@@ -16,7 +16,6 @@ import {
 } from "@/tools/user";
 import { DropdownMenuItem } from "./ui/dropdown-menu";
 import { UserIcon } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import { verifyPasswordMatch } from "@/tools/auth";
 
 export function AccountDialog() {
