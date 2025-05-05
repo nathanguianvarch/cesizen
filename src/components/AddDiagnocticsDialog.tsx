@@ -19,7 +19,6 @@ interface AddInformationsDialogProps {
 
 export function AddDiagnosticsDialog({
   onSuccess,
-  onError,
 }: AddInformationsDialogProps) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
