@@ -29,16 +29,13 @@ export function AuthDialog() {
         <Button onClick={handleOpen}>Se connecter</Button>
       </DialogTrigger>
       <DialogTitle></DialogTitle>
-      <DialogContent className="w-[380px]">
+      <DialogContent className="w-[350px]">
         <DialogDescription></DialogDescription>
         <Tabs defaultValue="login" className="flex gap-6">
           <div className="flex justify-center">
             <TabsList>
               <TabsTrigger value="login">Se connecter</TabsTrigger>
               <TabsTrigger value="register">S'inscrire</TabsTrigger>
-              <TabsTrigger value="reset_password">
-                Mot de passe oublié
-              </TabsTrigger>
             </TabsList>
           </div>
           <TabsContent value="login">
@@ -47,7 +44,6 @@ export function AuthDialog() {
           <TabsContent value="register">
             <RegisterPage onClose={handleClose} />
           </TabsContent>
-          <TabsContent value="reset_password"></TabsContent>
         </Tabs>
       </DialogContent>
     </Dialog>
