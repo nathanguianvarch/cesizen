@@ -87,7 +87,7 @@ export default function DiagnosticsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Brain className="h-5 w-5" />
-                Questionnaire de stress
+                Diagnostic de stress
               </CardTitle>
               <CardDescription>
                 Cochez les événements que vous avez vécus au cours des 12
