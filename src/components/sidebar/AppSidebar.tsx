@@ -25,8 +25,6 @@ const data: {
   { title: "Informations", url: "/informations", icon: "book-text" },
   { title: "Diagnotics", url: "/diagnostics", icon: "chart-spline" },
   { title: "Exercices", url: "/exercices", icon: "activity" },
-  { title: "Activités", url: "/activities", icon: "list" },
-  { title: "Emotions", url: "/emotions", icon: "smile" },
 ];
 
 export function AppSidebar() {
