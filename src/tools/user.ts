@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { Database } from "../../database.types";
 import { User } from "@supabase/supabase-js";
 import { toast } from "sonner";
@@ -8,7 +8,7 @@ export const fetchAllUsers = async (): Promise<{
   profile: Database["public"]["Tables"]["profile"]["Row"];
 }[]> => {
   // Récupère tous les utilisateurs via l'admin API
-  const { data: { users }, error: listError } = await supabase.auth.admin.listUsers();
+  const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
   if (listError) {
     toast.error("Erreur récupération des utilisateurs : " + listError.message);
     return [];
@@ -108,14 +108,14 @@ export const updateUserById = async (id: string, data: {
 }
 
 export const changePasswordByEmail = async (email: string, newPassword: string) => {
-  const { data: allUsers, error } = await supabase.auth.admin.listUsers();
+  const { data: allUsers, error } = await supabaseAdmin.auth.admin.listUsers();
   if(error) {
     toast.error(error.message)
     return null
   }
   const user = allUsers.users.find((u) => u.email === email);
   if(user) {
-    const { error: errorChangePassword } = await supabase.auth.admin.updateUserById(user.id, {
+    const { error: errorChangePassword } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
       password: newPassword
     });
     if(errorChangePassword) {

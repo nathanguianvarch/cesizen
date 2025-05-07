@@ -1,8 +1,8 @@
-import { supabase } from "@/lib/supabase";
+import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { toast } from "sonner";
 
 export const deleteUserById = async (id: string) => {
-  const { error } = await supabase.auth.admin.deleteUser(
+  const { error } = await supabaseAdmin.auth.admin.deleteUser(
     id
   )
   if (error) {

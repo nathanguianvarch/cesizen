@@ -23,16 +23,6 @@ export function HeroSection() {
             ressources.
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Link href="/register">
-            <Button size="lg">Commencer</Button>
-          </Link>
-          <Link href="/information">
-            <Button variant="outline" size="lg">
-              Voir plus
-            </Button>
-          </Link>
-        </div>
       </div>
     </section>
   );
