@@ -30,6 +30,44 @@ export type Database = {
         }
         Relationships: []
       }
+      exercise_history: {
+        Row: {
+          id: number
+          created_at: string
+          user_id: string
+          exercise_type: string
+          duration: number
+          completed: boolean
+          notes: string | null
+        }
+        Insert: {
+          id?: number
+          created_at?: string
+          user_id: string
+          exercise_type: string
+          duration: number
+          completed?: boolean
+          notes?: string | null
+        }
+        Update: {
+          id?: number
+          created_at?: string
+          user_id?: string
+          exercise_type?: string
+          duration?: number
+          completed?: boolean
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercise_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       information: {
         Row: {
           category: number | null

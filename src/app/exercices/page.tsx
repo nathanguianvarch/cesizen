@@ -14,9 +14,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Play, Pause, Settings, LoaderCircle } from "lucide-react";
+import { Play, Pause, Settings, LoaderCircle, History } from "lucide-react";
 import { fetchRespirations } from "@/tools/respiration";
 import { toast } from "sonner";
+import { addExerciseSession } from "@/tools/exercise-history";
+import { ExerciseHistoryComponent } from "@/components/exercise/ExerciseHistory";
 
 interface Respiration {
   id: number;
@@ -106,11 +108,21 @@ export default function RespirationPage() {
     return () => clearInterval(interval);
   }, [isPlaying, currentPhase, settings]);
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     setIsPlaying(!isPlaying);
     if (!isPlaying) {
       setCurrentPhase("inspiration");
       setProgress(0);
+    } else {
+      // Enregistrer la session quand l'exercice est terminé
+      const duration =
+        settings.inspiration + settings.apnee + settings.expiration;
+      await addExerciseSession(
+        selectedPreset === "custom"
+          ? "Personnalisé"
+          : `Préréglage ${selectedPreset}`,
+        duration
+      );
     }
   };
 
@@ -186,7 +198,7 @@ export default function RespirationPage() {
           </div>
           <div className="mx-auto max-w-4xl py-12">
             <Tabs defaultValue="exercise" className="w-full">
-              <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+              <TabsList className="grid w-full max-w-md mx-auto grid-cols-3">
                 <TabsTrigger value="exercise">
                   <Play className="h-4 w-4 mr-2" />
                   Exercice
@@ -194,6 +206,10 @@ export default function RespirationPage() {
                 <TabsTrigger value="settings">
                   <Settings className="h-4 w-4 mr-2" />
                   Paramètres
+                </TabsTrigger>
+                <TabsTrigger value="history">
+                  <History className="h-4 w-4 mr-2" />
+                  Historique
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="exercise" className="mt-6">
@@ -378,6 +394,9 @@ export default function RespirationPage() {
                     </Button>
                   </CardFooter>
                 </Card>
+              </TabsContent>
+              <TabsContent value="history" className="mt-6">
+                <ExerciseHistoryComponent />
               </TabsContent>
             </Tabs>
           </div>
